@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+List<Image> images = List.generate(22, (index) => Image.asset("assets/img/${index+1}.png"));
 
 class ImgRow extends StatelessWidget {
-  ImgRow({required this.number ,Key? key}) : super(key: key);
-  final List<Image> images = List.generate(22, (index) => Image.asset("assets/img/${index+1}.png"));
+  ImgRow({required this.number, Key? key}) : super(key: key);
   final int number;
 
   @override
@@ -11,22 +11,21 @@ class ImgRow extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        images[1 + number * 7],
-        images[2 + number * 7],
-        images[3 + number * 7],
-        images[4 + number * 7],
-        images[5 + number * 7],
-        images[6 + number * 7],
-        images[7 + number * 7],
-      ],
+      children:
+        List.generate(7, (index) => images[number + index * 3]),
+        /*images[number + 0 * 3], // 1 4 7 10 13 16 19
+        images[number + 1 * 3], // 2 5 8 11 14 17 20
+        images[number + 2 * 3], // 3 6 9 12 15 18 21
+        images[number + 3 * 3],
+        images[number + 4 * 3],
+        images[number + 5 * 3],
+        images[number + 6 * 3],*/
     );
   }
 }
 
 class ImgCol extends StatelessWidget {
   ImgCol({required this.number ,Key? key}) : super(key: key);
-  final List<Image> images = List.generate(22, (index) => Image.asset("assets/img/${index+1}.png"));
   final int number;
 
   @override
@@ -34,33 +33,52 @@ class ImgCol extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        images[1 + number * 7],
-        images[2 + number * 7],
-        images[3 + number * 7],
-        images[4 + number * 7],
-        images[5 + number * 7],
-        images[6 + number * 7],
-        images[7 + number * 7],
-      ],
+      children:[
+        Column(children: List.generate(7, (index) => Padding(padding: const EdgeInsets.symmetric(vertical: 15),
+                                      child: images[number + index * 3]))),
+      ]
     );
   }
 }
 
-class CardsDisplay1 extends StatefulWidget {
-  const CardsDisplay1 ({Key? key}) : super(key: key);
+class CardsDisplay extends StatefulWidget {
+  const CardsDisplay ({Key? key}) : super(key: key);
 
   @override
-  _CardsDisplay1State createState() => _CardsDisplay1State();
+  _CardsDisplayState createState() => _CardsDisplayState();
 }
 
-class _CardsDisplay1State extends State<CardsDisplay1> {
+class _CardsDisplayState extends State<CardsDisplay> {
 
   bool isVertical = false;
+  int columnChoice = 0;
 
   void _changeToVertical() {
     setState(() {
       isVertical = true;
+    });
+  }
+
+  void _chooseColumn(int num) {
+    setState(() {
+      columnChoice = num;
+      Image a;
+      switch(columnChoice){
+        case 1:
+          for(int i = 1;i <= 19; i+=3){
+            a = images[i];
+            images[i] = images[i + 1];
+            images[i + 1] = a;
+          }
+          break;
+        case 3:
+          for(int i = 2;i <= 20; i+=3){
+            a = images[i];
+            images[i] = images[i + 1];
+            images[i + 1] = a;
+          }
+          break;
+      }
     });
   }
 
@@ -77,17 +95,17 @@ class _CardsDisplay1State extends State<CardsDisplay1> {
             Container(
               margin: const EdgeInsets.only(bottom: 20),
               height: 150,
-              child: ImgRow(number: 0),
-            ),
-            Container(
-              margin: const EdgeInsets.only(bottom: 20),
-              height: 150,
               child: ImgRow(number: 1),
             ),
             Container(
               margin: const EdgeInsets.only(bottom: 20),
               height: 150,
               child: ImgRow(number: 2),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 20),
+              height: 150,
+              child: ImgRow(number: 3),
             ),
             ElevatedButton(onPressed: _changeToVertical, child: const Text("Сыграть")),
           ],
@@ -96,80 +114,56 @@ class _CardsDisplay1State extends State<CardsDisplay1> {
     }
     else{
       return Container(
-        padding: const EdgeInsets.all(40),
-        child: Expanded(child:
+        child:
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             textDirection: TextDirection.ltr,
             children: [
               Container(
-                margin: const EdgeInsets.only(bottom: 20),
                 width: 108,
-                child: ImgCol(number: 0),
+                child: Column(
+                  children: [
+                    ImgCol(number: 1),
+                    ElevatedButton(onPressed: () => _chooseColumn(1), child: const Text("Выбрать")),
+                  ],
+                ),
               ),
               Container(
-                margin: const EdgeInsets.only(bottom: 20),
                 width: 108,
-                child: ImgCol(number: 1),
+                child: Column(
+                  children: [
+                    ImgCol(number: 2),
+                    ElevatedButton(onPressed: () => _chooseColumn(2), child: const Text("Выбрать")),
+                  ],
+                ),
               ),
               Container(
-                margin: const EdgeInsets.only(bottom: 20),
                 width: 108,
-                child: ImgCol(number: 2),
+                child: Column(
+                  children: [
+                    ImgCol(number: 3),
+                    ElevatedButton(onPressed: () => _chooseColumn(3), child: const Text("Выбрать")),
+                  ],
+                ),
               ),
             ],
           ),
-        )
       );
     }
 
   }
 }
 
-
-class CardsDisplay extends StatelessWidget {
-  const CardsDisplay({Key? key}) : super(key: key);
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(40),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        textDirection: TextDirection.ltr,
-        children: [
-          Container(
-            margin: const EdgeInsets.only(bottom: 20),
-            height: 150,
-            child: ImgRow(number: 0),
-          ),
-          Container(
-            margin: const EdgeInsets.only(bottom: 20),
-            height: 150,
-            child: ImgRow(number: 1),
-          ),
-          Container(
-            margin: const EdgeInsets.only(bottom: 20),
-            height: 150,
-            child: ImgRow(number: 2),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
       title: 'Card Focus',
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(
-          child: Column(
-            children: const [
-              CardsDisplay1(),
-            ],
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child:
+              CardsDisplay(),
           ),
         ),
       )));
