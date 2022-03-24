@@ -49,6 +49,7 @@ class CardsDisplay extends StatefulWidget {
 class _CardsDisplayState extends State<CardsDisplay> {
   bool isVertical = false;
   int columnChoice = 0;
+  int _choiceCount = 0;
 
   void _changeToVertical() {
     setState(() {
@@ -58,6 +59,7 @@ class _CardsDisplayState extends State<CardsDisplay> {
 
   void _chooseColumn(int num) {
     setState(() {
+      _choiceCount++;
       columnChoice = num;
       Image a;
       List<Image> helpList = List.generate(22, (index) => images[index]);
@@ -100,7 +102,24 @@ class _CardsDisplayState extends State<CardsDisplay> {
 
   @override
   Widget build(BuildContext context) {
-    if (isVertical == false) {
+    if(_choiceCount == 3){
+      return Container(
+        padding: const EdgeInsets.all(40),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(bottom: 20),
+              child: const Text("Ваша карта:", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+            ),
+            Container(
+              child: images[11],
+            ),
+          ],
+        ),
+      );
+    }
+    else if (isVertical == false) {
       return Container(
         padding: const EdgeInsets.all(40),
         child: Column(
