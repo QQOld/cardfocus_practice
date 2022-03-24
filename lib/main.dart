@@ -104,9 +104,10 @@ class _CardsDisplayState extends State<CardsDisplay> {
   Widget build(BuildContext context) {
     if(_choiceCount == 3){
       return Container(
-        padding: const EdgeInsets.all(40),
+        padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               margin: const EdgeInsets.only(bottom: 20),
@@ -121,9 +122,10 @@ class _CardsDisplayState extends State<CardsDisplay> {
     }
     else if (isVertical == false) {
       return Container(
+        alignment: Alignment.center,
         padding: const EdgeInsets.all(40),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           textDirection: TextDirection.ltr,
           children: [
             Container(
@@ -147,7 +149,7 @@ class _CardsDisplayState extends State<CardsDisplay> {
         ),
       );
     } else {
-      return Container(
+      return SingleChildScrollView(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           textDirection: TextDirection.ltr,
@@ -198,10 +200,7 @@ void main() {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: CardsDisplay(),
-          ),
+          child: CardsDisplay(),
         ),
       )));
 }
