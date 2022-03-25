@@ -8,7 +8,7 @@ List<Image> images =
     List.generate(22, (index) => Image.asset("assets/img/${index + 1}.png"));
 
 class ImgRow extends StatelessWidget {
-  ImgRow({required this.number, Key? key}) : super(key: key);
+  const ImgRow({required this.number, Key? key}) : super(key: key);
   final int number;
 
   @override
@@ -22,8 +22,8 @@ class ImgRow extends StatelessWidget {
 }
 
 class ImgCol extends StatelessWidget {
-  ImgCol({required this.number, Key? key}) : super(key: key);
-  int number;
+  const ImgCol({required this.number, Key? key}) : super(key: key);
+  final int number;
 
   @override
   Widget build(BuildContext context) {
@@ -131,17 +131,17 @@ class _CardsDisplayState extends State<CardsDisplay> {
             Container(
               margin: const EdgeInsets.only(bottom: 20),
               height: 150,
-              child: ImgRow(number: 1),
+              child: const ImgRow(number: 1),
             ),
             Container(
               margin: const EdgeInsets.only(bottom: 20),
               height: 150,
-              child: ImgRow(number: 2),
+              child: const ImgRow(number: 2),
             ),
             Container(
               margin: const EdgeInsets.only(bottom: 20),
               height: 150,
-              child: ImgRow(number: 3),
+              child: const ImgRow(number: 3),
             ),
             ElevatedButton(
                 onPressed: _changeToVertical, child: const Text("Сыграть")),
@@ -158,7 +158,7 @@ class _CardsDisplayState extends State<CardsDisplay> {
               width: 108,
               child: Column(
                 children: [
-                  ImgCol(number: 1),
+                  const ImgCol(number: 1),
                   ElevatedButton(
                       onPressed: () => _chooseColumn(1),
                       child: const Text("Выбрать")),
@@ -169,7 +169,7 @@ class _CardsDisplayState extends State<CardsDisplay> {
               width: 108,
               child: Column(
                 children: [
-                  ImgCol(number: 2),
+                  const ImgCol(number: 2),
                   ElevatedButton(
                       onPressed: () => _chooseColumn(2),
                       child: const Text("Выбрать")),
@@ -180,7 +180,7 @@ class _CardsDisplayState extends State<CardsDisplay> {
               width: 108,
               child: Column(
                 children: [
-                  ImgCol(number: 3),
+                  const ImgCol(number: 3),
                   ElevatedButton(
                       onPressed: () => _chooseColumn(3),
                       child: const Text("Выбрать")),
