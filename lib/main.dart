@@ -27,13 +27,16 @@ class ImgCol extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: List.generate(
-          7,
-          (index) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              child: images[number + index * 3])),
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: List.generate(
+            7,
+            (index) => AnimatedPadding(
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  duration: const Duration(seconds: 5),
+                  child: images[number + index * 3],
+                )
+        )
     );
   }
 }
@@ -63,35 +66,35 @@ class _CardsDisplayState extends State<CardsDisplay> {
       Image a;
       List<Image> helpList = List.generate(22, (index) => images[index]);
 
-      for(int i = 0; i <= 2; i++){
-        for (int j = i*7 + 1, k = 1 + i; j <= 7 + i*7; j++, k+=3) {
+      for (int i = 0; i <= 2; i++) {
+        for (int j = i * 7 + 1, k = 1 + i; j <= 7 + i * 7; j++, k += 3) {
           helpList[j] = images[k];
         }
       }
 
       switch (columnChoice) {
         case 1:
-          for(int i = 1; i <= 7; i++){
+          for (int i = 1; i <= 7; i++) {
             a = helpList[i];
             helpList[i] = helpList[i + 7];
             helpList[i + 7] = a;
           }
-          for(int i = 1; i <= 21; i++){
+          for (int i = 1; i <= 21; i++) {
             images[i] = helpList[i];
           }
           break;
         case 2:
-          for(int i = 1; i <= 21; i++){
+          for (int i = 1; i <= 21; i++) {
             images[i] = helpList[i];
           }
           break;
         case 3:
-          for(int i = 8; i <= 14; i++){
+          for (int i = 8; i <= 14; i++) {
             a = helpList[i];
             helpList[i] = helpList[i + 7];
             helpList[i + 7] = a;
           }
-          for(int i = 1; i <= 21; i++){
+          for (int i = 1; i <= 21; i++) {
             images[i] = helpList[i];
           }
           break;
@@ -101,26 +104,34 @@ class _CardsDisplayState extends State<CardsDisplay> {
 
   @override
   Widget build(BuildContext context) {
-    if(_choiceCount == 3){
-      return AnimatedContainer(
+    if (_choiceCount == 3) {
+      return Container(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(bottom: 20),
-              child: const Text("Ваша карта:", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
-            ),
-            Container(
-              child: images[11],
-            ),
-          ],
-        ),
-        duration: const Duration(seconds: 5),
+        child: TweenAnimationBuilder(
+            tween: Tween<double>(begin: 0.0, end: 1.0),
+            duration: const Duration(milliseconds: 3000),
+            builder: (_, double opacity, __) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    child: const Text("Ваша карта:",
+                        style: TextStyle(
+                            fontSize: 26, fontWeight: FontWeight.bold)),
+                  ),
+                  Opacity(
+                    opacity: opacity,
+                    child: Container(
+                      child: images[11],
+                    ),
+                  )
+                ],
+              );
+            }),
       );
-    }
-    else if (isPlaying == false) {
+    } else if (isPlaying == false) {
       return SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 40),
         child: Column(
@@ -129,20 +140,20 @@ class _CardsDisplayState extends State<CardsDisplay> {
               direction: Axis.horizontal,
               spacing: 50.0, // gap between adjacent chips
               runSpacing: 30.0, // gap between lines,
-              children: List.generate(21, (index) =>
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      minHeight: 70,
-                      maxHeight: 200,
-                    ),
-                    child: images[index + 1],
-                  )
-              ),
+              children: List.generate(
+                  21,
+                  (index) => ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minHeight: 70,
+                          maxHeight: 200,
+                        ),
+                        child: images[index + 1],
+                      )),
             ),
             Container(
               margin: const EdgeInsets.only(top: 25),
               child: ElevatedButton(
-                  onPressed: _changeToVertical, child: const Text("Сыграть")),
+                  onPressed: _changeToVertical, child: const Text("Сыграем")),
             ),
           ],
         ),
