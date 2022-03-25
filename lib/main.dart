@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 List<Image> images =
     List.generate(22, (index) => Image.asset("assets/img/${index + 1}.png"));
 
-class ImgRow extends StatelessWidget {
+/*class ImgRow extends StatelessWidget {
   const ImgRow({required this.number, Key? key}) : super(key: key);
   final int number;
 
@@ -18,7 +18,7 @@ class ImgRow extends StatelessWidget {
       children: List.generate(7, (index) => images[number + index * 3]),
     );
   }
-}
+}*/
 
 class ImgCol extends StatelessWidget {
   const ImgCol({required this.number, Key? key}) : super(key: key);
@@ -102,7 +102,7 @@ class _CardsDisplayState extends State<CardsDisplay> {
   @override
   Widget build(BuildContext context) {
     if(_choiceCount == 3){
-      return Container(
+      return AnimatedContainer(
         padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -117,6 +117,7 @@ class _CardsDisplayState extends State<CardsDisplay> {
             ),
           ],
         ),
+        duration: const Duration(seconds: 5),
       );
     }
     else if (isPlaying == false) {
@@ -183,7 +184,7 @@ class _CardsDisplayState extends State<CardsDisplay> {
               width: 108,
               child: Column(
                 children: [
-                  const ImgCol(number: 1),
+                  ImgCol(number: 1),
                   ElevatedButton(
                       onPressed: () => _chooseColumn(1),
                       child: const Text("Выбрать")),
@@ -194,7 +195,7 @@ class _CardsDisplayState extends State<CardsDisplay> {
               width: 108,
               child: Column(
                 children: [
-                  const ImgCol(number: 2),
+                  ImgCol(number: 2),
                   ElevatedButton(
                       onPressed: () => _chooseColumn(2),
                       child: const Text("Выбрать")),
@@ -205,7 +206,7 @@ class _CardsDisplayState extends State<CardsDisplay> {
               width: 108,
               child: Column(
                 children: [
-                  const ImgCol(number: 3),
+                  ImgCol(number: 3),
                   ElevatedButton(
                       onPressed: () => _chooseColumn(3),
                       child: const Text("Выбрать")),
