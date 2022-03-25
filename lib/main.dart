@@ -1,7 +1,6 @@
 // 1 4 7 10 13 16 19
 // 2 5 8 11 14 17 20
 // 3 6 9 12 15 18 21
-
 import 'package:flutter/material.dart';
 
 List<Image> images =
@@ -47,13 +46,13 @@ class CardsDisplay extends StatefulWidget {
 }
 
 class _CardsDisplayState extends State<CardsDisplay> {
-  bool isVertical = false;
+  bool isPlaying = false;
   int columnChoice = 0;
   int _choiceCount = 0;
 
   void _changeToVertical() {
     setState(() {
-      isVertical = true;
+      isPlaying = true;
     });
   }
 
@@ -120,8 +119,34 @@ class _CardsDisplayState extends State<CardsDisplay> {
         ),
       );
     }
-    else if (isVertical == false) {
-      return Container(
+    else if (isPlaying == false) {
+      return SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 40),
+        child: Column(
+          children: [
+            Wrap(
+              direction: Axis.horizontal,
+              spacing: 50.0, // gap between adjacent chips
+              runSpacing: 30.0, // gap between lines,
+              children: List.generate(21, (index) =>
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      minHeight: 70,
+                      maxHeight: 200,
+                    ),
+                    child: images[index + 1],
+                  )
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 25),
+              child: ElevatedButton(
+                  onPressed: _changeToVertical, child: const Text("Сыграть")),
+            ),
+          ],
+        ),
+      );
+      /*return Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.all(40),
         child: Column(
@@ -147,7 +172,7 @@ class _CardsDisplayState extends State<CardsDisplay> {
                 onPressed: _changeToVertical, child: const Text("Сыграть")),
           ],
         ),
-      );
+      );*/
     } else {
       return SingleChildScrollView(
         child: Row(
