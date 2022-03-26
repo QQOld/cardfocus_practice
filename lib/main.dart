@@ -26,18 +26,30 @@ class ImgCol extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: List.generate(
-            7,
-            (index) => AnimatedPadding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  duration: const Duration(seconds: 5),
-                  child: images[number + index * 3],
-                )
-        )
-    );
+    return TweenAnimationBuilder(
+        tween: Tween<double>(begin: 0.0, end: 100.0),
+        duration: const Duration(milliseconds: 2000),
+        onEnd: ()=>{},
+        builder: (_, double move, __) {
+          return Column(
+            children: [
+              Expanded(
+                  child: Stack(
+                      children: List.generate(
+                          7,
+                          (index) => Positioned(
+                                top: index * move,
+                                child: ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                    minWidth: 80,
+                                    maxWidth: 130,
+                                  ),
+                                  child: images[number + index * 3],
+                                ),
+                              ))))
+            ],
+          );
+        });
   }
 }
 
@@ -132,100 +144,93 @@ class _CardsDisplayState extends State<CardsDisplay> {
             }),
       );
     } else if (isPlaying == false) {
-      return SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 40),
-        child: Column(
-          children: [
-            Wrap(
-              direction: Axis.horizontal,
-              spacing: 50.0, // gap between adjacent chips
-              runSpacing: 30.0, // gap between lines,
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            alignment: Alignment.center,
+            constraints: BoxConstraints(maxWidth: 830, maxHeight: 600),
+            child: Stack(
               children: List.generate(
                   21,
-                  (index) => ConstrainedBox(
+                  (index) => Positioned(
+                      top: index < 10 ? 0 : 180,
+                      left:
+                          index < 10 ? 70.0 * index : 70.0 * index - 70.0 * 10,
+                      child: ConstrainedBox(
                         constraints: const BoxConstraints(
-                          minHeight: 70,
-                          maxHeight: 200,
+                          minWidth: 80,
+                          maxWidth: 130,
                         ),
                         child: images[index + 1],
-                      )),
+                      ))),
             ),
-            Container(
-              margin: const EdgeInsets.only(top: 25),
-              child: ElevatedButton(
-                  onPressed: _changeToVertical, child: const Text("Сыграем")),
-            ),
-          ],
-        ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 25),
+            padding: const EdgeInsets.all(30),
+            child: ElevatedButton(
+                onPressed: _changeToVertical, child: const Text("Сыграем")),
+          ),
+        ],
       );
-      /*return Container(
-        alignment: Alignment.center,
-        padding: const EdgeInsets.all(40),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          textDirection: TextDirection.ltr,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(bottom: 20),
-              height: 150,
-              child: const ImgRow(number: 1),
-            ),
-            Container(
-              margin: const EdgeInsets.only(bottom: 20),
-              height: 150,
-              child: const ImgRow(number: 2),
-            ),
-            Container(
-              margin: const EdgeInsets.only(bottom: 20),
-              height: 150,
-              child: const ImgRow(number: 3),
-            ),
-            ElevatedButton(
-                onPressed: _changeToVertical, child: const Text("Сыграть")),
-          ],
-        ),
-      );*/
     } else {
-      return SingleChildScrollView(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          textDirection: TextDirection.ltr,
-          children: [
-            Container(
-              width: 108,
-              child: Column(
-                children: [
-                  ImgCol(number: 1),
-                  ElevatedButton(
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        textDirection: TextDirection.ltr,
+        children: [
+          Container(
+            width: 130,
+            child: Column(
+              children: [
+                Expanded(
+                  child: ImgCol(number: 1),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 25),
+                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  child: ElevatedButton(
                       onPressed: () => _chooseColumn(1),
                       child: const Text("Выбрать")),
-                ],
-              ),
+                )
+              ],
             ),
-            Container(
-              width: 108,
-              child: Column(
-                children: [
-                  ImgCol(number: 2),
-                  ElevatedButton(
+          ),
+          Container(
+            width: 130,
+            child: Column(
+              children: [
+                Expanded(
+                  child: ImgCol(number: 2),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 25),
+                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  child: ElevatedButton(
                       onPressed: () => _chooseColumn(2),
                       child: const Text("Выбрать")),
-                ],
-              ),
+                ),
+              ],
             ),
-            Container(
-              width: 108,
-              child: Column(
-                children: [
-                  ImgCol(number: 3),
-                  ElevatedButton(
+          ),
+          Container(
+            width: 130,
+            child: Column(
+              children: [
+                Expanded(
+                  child: ImgCol(number: 3),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 25),
+                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  child: ElevatedButton(
                       onPressed: () => _chooseColumn(3),
                       child: const Text("Выбрать")),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       );
     }
   }
