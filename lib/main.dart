@@ -27,27 +27,23 @@ class ImgCol extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TweenAnimationBuilder(
-        tween: Tween<double>(begin: 0.0, end: 100.0),
+        tween: Tween<double>(begin: 0.0, end: 60),
         duration: const Duration(milliseconds: 2000),
-        onEnd: ()=>{},
+        onEnd: () {},
         builder: (_, double move, __) {
-          return Column(
-            children: [
-              Expanded(
-                  child: Stack(
-                      children: List.generate(
-                          7,
-                          (index) => Positioned(
-                                top: index * move,
-                                child: ConstrainedBox(
-                                  constraints: const BoxConstraints(
-                                    minWidth: 80,
-                                    maxWidth: 130,
-                                  ),
-                                  child: images[number + index * 3],
-                                ),
-                              ))))
-            ],
+          return Stack(
+            children: List.generate(
+                7,
+                (index) => Positioned(
+                      top: index * move,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minWidth: 80,
+                          maxWidth: 130,
+                        ),
+                        child: images[number + index * 3],
+                      ),
+                    )),
           );
         });
   }
@@ -143,20 +139,18 @@ class _CardsDisplayState extends State<CardsDisplay> {
               );
             }),
       );
-    } else if (isPlaying == false) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            alignment: Alignment.center,
-            constraints: BoxConstraints(maxWidth: 830, maxHeight: 600),
-            child: Stack(
+    } else if (!isPlaying) {
+      return Scaffold(
+        body: TweenAnimationBuilder(
+          tween: Tween<double>(begin: 0.0, end: 70.0),
+          duration: const Duration(milliseconds: 2000),
+          builder: (_, double move, __){
+            return Stack(
               children: List.generate(
                   21,
-                  (index) => Positioned(
+                      (index) => Positioned(
                       top: index < 10 ? 0 : 180,
-                      left:
-                          index < 10 ? 70.0 * index : 70.0 * index - 70.0 * 10,
+                      left: index < 10 ? move * index : move * index - move * 10,
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(
                           minWidth: 80,
@@ -164,15 +158,15 @@ class _CardsDisplayState extends State<CardsDisplay> {
                         ),
                         child: images[index + 1],
                       ))),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 25),
-            padding: const EdgeInsets.all(30),
-            child: ElevatedButton(
-                onPressed: _changeToVertical, child: const Text("Сыграем")),
-          ),
-        ],
+            );
+          },
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+
+          onPressed: _changeToVertical,
+          label: const Text("Сыграть"),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       );
     } else {
       return Row(
@@ -187,8 +181,7 @@ class _CardsDisplayState extends State<CardsDisplay> {
                   child: ImgCol(number: 1),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 25),
-                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  padding: const EdgeInsets.symmetric(vertical: 20),
                   child: ElevatedButton(
                       onPressed: () => _chooseColumn(1),
                       child: const Text("Выбрать")),
@@ -204,8 +197,7 @@ class _CardsDisplayState extends State<CardsDisplay> {
                   child: ImgCol(number: 2),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 25),
-                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  padding: const EdgeInsets.symmetric(vertical: 20),
                   child: ElevatedButton(
                       onPressed: () => _chooseColumn(2),
                       child: const Text("Выбрать")),
@@ -221,8 +213,7 @@ class _CardsDisplayState extends State<CardsDisplay> {
                   child: ImgCol(number: 3),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 25),
-                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  padding: const EdgeInsets.symmetric(vertical: 20),
                   child: ElevatedButton(
                       onPressed: () => _chooseColumn(3),
                       child: const Text("Выбрать")),
