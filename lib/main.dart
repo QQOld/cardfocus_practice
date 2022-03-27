@@ -127,7 +127,7 @@ class _CardsDisplayState extends State<CardsDisplay> {
                     margin: const EdgeInsets.only(bottom: 20),
                     child: const Text("Ваша карта:",
                         style: TextStyle(
-                            fontSize: 26, fontWeight: FontWeight.bold)),
+                            fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white,),),
                   ),
                   Opacity(
                     opacity: opacity,
@@ -141,28 +141,57 @@ class _CardsDisplayState extends State<CardsDisplay> {
       );
     } else if (!isPlaying) {
       return Scaffold(
+        backgroundColor: Colors.transparent,
         body: TweenAnimationBuilder(
           tween: Tween<double>(begin: 0.0, end: 70.0),
-          duration: const Duration(milliseconds: 2000),
-          builder: (_, double move, __){
-            return Stack(
-              children: List.generate(
-                  21,
-                      (index) => Positioned(
-                      top: index < 10 ? 0 : 180,
-                      left: index < 10 ? move * index : move * index - move * 10,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          minWidth: 80,
-                          maxWidth: 130,
-                        ),
-                        child: images[index + 1],
-                      ))),
-            );
+          duration: const Duration(milliseconds: 2500),
+          curve: Curves.easeInCubic,
+          builder: (_, double move, __) {
+            return Stack(children: [
+                ...List.generate(
+                    11,
+                    (index) => Positioned(
+                        top: 0,
+                        left:
+                            move * index + 100,
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            minWidth: 80,
+                            maxWidth: 130,
+                          ),
+                          child: images[index],
+                        ))),
+                ...List.generate(
+                    11,
+                    (index) => Positioned(
+                        top: 180,
+                        left:
+                            move * index + 100,
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            minWidth: 80,
+                            maxWidth: 130,
+                          ),
+                          child: images[index + 11],
+                        )))
+              ]
+                  /*List.generate(
+                    21,
+                        (index) => Positioned(
+                        top: index < 10 ? 0 : 180,
+                        left: index < 10 ? move * index : move * index - move * 10,
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            minWidth: 80,
+                            maxWidth: 130,
+                          ),
+                          child: images[index + 1],
+                        )))*/
+
+                  );
           },
         ),
         floatingActionButton: FloatingActionButton.extended(
-
           onPressed: _changeToVertical,
           label: const Text("Сыграть"),
         ),
@@ -232,6 +261,7 @@ void main() {
       title: 'Card Focus',
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        backgroundColor: Color.fromRGBO(69, 152, 66, 0.9),
         body: Center(
           child: CardsDisplay(),
         ),
