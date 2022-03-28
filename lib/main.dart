@@ -6,21 +6,63 @@ import 'package:flutter/material.dart';
 List<Image> images =
     List.generate(22, (index) => Image.asset("assets/img/${index + 1}.png"));
 
-/*class ImgRow extends StatelessWidget {
-  const ImgRow({required this.number, Key? key}) : super(key: key);
+class ImgCol extends StatefulWidget {
+  const ImgCol({required this.number, Key? key}) : super(key: key);
   final int number;
 
   @override
+  _ImgColState createState() => _ImgColState();
+}
+
+class _ImgColState extends State<ImgCol> with SingleTickerProviderStateMixin {
+  late Animation<double> animation;
+  late AnimationController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+        duration: const Duration(milliseconds: 2000), vsync: this);
+    animation = Tween<double>(begin: 0.0, end: 60).animate(controller)
+      ..addListener(() {
+        setState(() {});
+      })
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          controller.reverse();
+        } else if (status == AnimationStatus.dismissed) {
+          controller.forward();
+        }
+      });
+    controller.forward();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: List.generate(7, (index) => images[number + index * 3]),
+    return Stack(
+      children: List.generate(
+          7,
+          (index) => Positioned(
+                top: index * animation.value,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minWidth: 80,
+                    maxWidth: 130,
+                  ),
+                  child: images[widget.number + index * 3],
+                ),
+              )),
     );
   }
-}*/
+}
 
-class ImgCol extends StatelessWidget {
+/*class ImgCol extends StatelessWidget {
   const ImgCol({required this.number, Key? key}) : super(key: key);
   final int number;
 
@@ -47,7 +89,7 @@ class ImgCol extends StatelessWidget {
           );
         });
   }
-}
+}*/
 
 class CardsDisplay extends StatefulWidget {
   const CardsDisplay({Key? key}) : super(key: key);
@@ -125,9 +167,14 @@ class _CardsDisplayState extends State<CardsDisplay> {
                 children: [
                   Container(
                     margin: const EdgeInsets.only(bottom: 20),
-                    child: const Text("Ваша карта:",
-                        style: TextStyle(
-                            fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white,),),
+                    child: const Text(
+                      "Ваша карта:",
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                   Opacity(
                     opacity: opacity,
@@ -148,34 +195,32 @@ class _CardsDisplayState extends State<CardsDisplay> {
           curve: Curves.easeInCubic,
           builder: (_, double move, __) {
             return Stack(children: [
-                ...List.generate(
-                    11,
-                    (index) => Positioned(
-                        top: 0,
-                        left:
-                            move * index + 100,
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(
-                            minWidth: 80,
-                            maxWidth: 130,
-                          ),
-                          child: images[index],
-                        ))),
-                ...List.generate(
-                    11,
-                    (index) => Positioned(
-                        top: 180,
-                        left:
-                            move * index + 100,
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(
-                            minWidth: 80,
-                            maxWidth: 130,
-                          ),
-                          child: images[index + 11],
-                        )))
-              ]
-                  /*List.generate(
+              ...List.generate(
+                  11,
+                  (index) => Positioned(
+                      top: 0,
+                      left: move * index + 100,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minWidth: 80,
+                          maxWidth: 130,
+                        ),
+                        child: images[index],
+                      ))),
+              ...List.generate(
+                  11,
+                  (index) => Positioned(
+                      top: 180,
+                      left: move * index + 100,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minWidth: 80,
+                          maxWidth: 130,
+                        ),
+                        child: images[index + 11],
+                      )))
+            ]
+                /*List.generate(
                     21,
                         (index) => Positioned(
                         top: index < 10 ? 0 : 180,
@@ -188,7 +233,7 @@ class _CardsDisplayState extends State<CardsDisplay> {
                           child: images[index + 1],
                         )))*/
 
-                  );
+                );
           },
         ),
         floatingActionButton: FloatingActionButton.extended(
