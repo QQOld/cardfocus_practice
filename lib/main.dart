@@ -248,7 +248,7 @@ class _CardsDisplayState extends State<CardsDisplay>
           },
         ),
         floatingActionButton: ElevatedButton(
-          onPressed: mainAnimIsCompleted ? _changeToVertical : null,
+          onPressed: mainAnimIsCompleted ? _changeToVertical : _changeToVertical,
           child: const Text("Сыграть"),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -264,8 +264,8 @@ class _CardsDisplayState extends State<CardsDisplay>
               child: Column(
                 children: [
                   Expanded(
-                    child: Stack(
-                      children: List.generate(
+                    child: Stack(children: [
+                      ...List.generate(
                           7,
                           (index) => Positioned(
                                 width: 130,
@@ -277,7 +277,12 @@ class _CardsDisplayState extends State<CardsDisplay>
                                 // индекс (0..2) + 1 = номер колонки, умножение на 3 для правильного разложения карт(в каждый столбец по порядку, т.е. 1 столбец - 1, 4, 7...)
                                 child: images[num + 1 + index * 3],
                               )),
-                    ),
+                      Positioned(
+                          width: 130,
+                          top: -animation.value * 3,
+                          child: images[0]
+                      )
+                    ]),
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 20),
