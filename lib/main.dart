@@ -64,35 +64,6 @@ class _ImgColState extends State<ImgCol> with SingleTickerProviderStateMixin {
   }
 }*/
 
-/*class ImgCol extends StatelessWidget {
-  const ImgCol({required this.number, Key? key}) : super(key: key);
-  final int number;
-
-  @override
-  Widget build(BuildContext context) {
-    return TweenAnimationBuilder(
-        tween: Tween<double>(begin: 0.0, end: 60),
-        duration: const Duration(milliseconds: 2000),
-        onEnd: () {},
-        builder: (_, double move, __) {
-          return Stack(
-            children: List.generate(
-                7,
-                (index) => Positioned(
-                      top: index * move,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          minWidth: 80,
-                          maxWidth: 130,
-                        ),
-                        child: images[number + index * 3],
-                      ),
-                    )),
-          );
-        });
-  }
-}*/
-
 class CardsDisplay extends StatefulWidget {
   const CardsDisplay({Key? key}) : super(key: key);
 
@@ -107,7 +78,7 @@ class _CardsDisplayState extends State<CardsDisplay>
   late Animation<double> curve;
 
   bool mainAnimIsCompleted = false;
-  bool isPlaying = false;
+  bool isCardChosen = true;
   int columnChoice = 0;
   int _choiceCount = 0;
 
@@ -130,7 +101,7 @@ class _CardsDisplayState extends State<CardsDisplay>
 
   void _changeToVertical() {
     setState(() {
-      isPlaying = true;
+      isCardChosen = false;
     });
     controller.forward();
   }
@@ -218,17 +189,19 @@ class _CardsDisplayState extends State<CardsDisplay>
               );
             }),
       );
-    } else if (!isPlaying) {
+    } else if (isCardChosen) {
       return Scaffold(
         backgroundColor: Colors.transparent,
         body: TweenAnimationBuilder(
           tween: Tween<double>(begin: 0.0, end: 70.0),
           duration: const Duration(milliseconds: 2500),
           curve: Curves.easeInCubic,
-          onEnd: () {                           //не работает
+          onEnd: () {
+            //не работает
             setState(() {
               () {
                 mainAnimIsCompleted = true;
+                print('dgdgd');
               };
             });
           },
@@ -275,7 +248,7 @@ class _CardsDisplayState extends State<CardsDisplay>
           },
         ),
         floatingActionButton: ElevatedButton(
-          onPressed: mainAnimIsCompleted ? _changeToVertical : _changeToVertical,
+          onPressed: mainAnimIsCompleted ? _changeToVertical : null,
           child: const Text("Сыграть"),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -301,7 +274,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                                     MediaQuery.of(context).size.height /
                                     7 *
                                     0.01,
-                                // индекс (0 - 2) + 1 = номер колонки, умножение на 3 для правильного разложения карт(в каждый столбец по порядку, т.е. 1 столбец - 1, 4, 7...)
+                                // индекс (0..2) + 1 = номер колонки, умножение на 3 для правильного разложения карт(в каждый столбец по порядку, т.е. 1 столбец - 1, 4, 7...)
                                 child: images[num + 1 + index * 3],
                               )),
                     ),
