@@ -7,39 +7,41 @@ List<Image> images =
     List.generate(22, (index) => Image.asset("assets/img/${index + 1}.png"));
 
 class ImgCol extends StatefulWidget {
-  const ImgCol({required this.number, Key? key}) : super(key: key);
+  const ImgCol(
+      {required this.number,
+      required this.animation,
+      required this.controller,
+      Key? key})
+      : super(key: key);
   final int number;
+  final Animation<double> animation;
+  final AnimationController controller;
 
   @override
   _ImgColState createState() => _ImgColState();
 }
 
 class _ImgColState extends State<ImgCol> with SingleTickerProviderStateMixin {
-  late Animation<double> animation;
-  late AnimationController controller;
-
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(
-        duration: const Duration(milliseconds: 2000), vsync: this);
-    animation = Tween<double>(begin: 0.0, end: 60).animate(controller)
+
+    widget.animation
       ..addListener(() {
         setState(() {});
       })
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          controller.reverse();
         } else if (status == AnimationStatus.dismissed) {
-          controller.forward();
+          widget.controller.forward();
         }
       });
-    controller.forward();
+    widget.controller.forward();
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    widget.controller.dispose();
     super.dispose();
   }
 
@@ -49,7 +51,7 @@ class _ImgColState extends State<ImgCol> with SingleTickerProviderStateMixin {
       children: List.generate(
           7,
           (index) => Positioned(
-                top: index * animation.value,
+                top: index * widget.animation.value,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(
                     minWidth: 80,
@@ -98,58 +100,87 @@ class CardsDisplay extends StatefulWidget {
   _CardsDisplayState createState() => _CardsDisplayState();
 }
 
-class _CardsDisplayState extends State<CardsDisplay> {
+class _CardsDisplayState extends State<CardsDisplay>
+    with SingleTickerProviderStateMixin {
+  late Animation<double> animation;
+  late AnimationController controller;
+  late Animation<double> curve;
+
   bool isPlaying = false;
   int columnChoice = 0;
   int _choiceCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+        duration: const Duration(milliseconds: 2500), vsync: this);
+    curve = CurvedAnimation(parent: controller, curve: Curves.easeInCubic);
+    animation = Tween<double>(begin: 0.0, end: 60.0).animate(curve)
+      ..addListener(() {
+        setState(() {});
+      })
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.dismissed) {
+          controller.forward();
+        }
+      });
+  }
 
   void _changeToVertical() {
     setState(() {
       isPlaying = true;
     });
+    controller.forward();
   }
 
   void _chooseColumn(int num) {
-    setState(() {
-      _choiceCount++;
-      columnChoice = num;
-      Image a;
-      List<Image> helpList = List.generate(22, (index) => images[index]);
+    if (animation.isCompleted) {  //почему не работает без if?
+      controller.reverse();
+    }
+    Future.delayed(const Duration(milliseconds: 2500), (){
+      setState(() {
+        _choiceCount++;
+        columnChoice = num;
+        Image a;
+        List<Image> helpList = List.generate(22, (index) => images[index]);
 
-      for (int i = 0; i <= 2; i++) {
-        for (int j = i * 7 + 1, k = 1 + i; j <= 7 + i * 7; j++, k += 3) {
-          helpList[j] = images[k];
+        for (int i = 0; i <= 2; i++) {
+          for (int j = i * 7 + 1, k = 1 + i; j <= 7 + i * 7; j++, k += 3) {
+            helpList[j] = images[k];
+          }
         }
-      }
 
-      switch (columnChoice) {
-        case 1:
-          for (int i = 1; i <= 7; i++) {
-            a = helpList[i];
-            helpList[i] = helpList[i + 7];
-            helpList[i + 7] = a;
-          }
-          for (int i = 1; i <= 21; i++) {
-            images[i] = helpList[i];
-          }
-          break;
-        case 2:
-          for (int i = 1; i <= 21; i++) {
-            images[i] = helpList[i];
-          }
-          break;
-        case 3:
-          for (int i = 8; i <= 14; i++) {
-            a = helpList[i];
-            helpList[i] = helpList[i + 7];
-            helpList[i + 7] = a;
-          }
-          for (int i = 1; i <= 21; i++) {
-            images[i] = helpList[i];
-          }
-          break;
-      }
+        switch (columnChoice) {
+          case 1:
+            for (int i = 1; i <= 7; i++) {
+              a = helpList[i];
+              helpList[i] = helpList[i + 7];
+              helpList[i + 7] = a;
+            }
+            for (int i = 1; i <= 21; i++) {
+              images[i] = helpList[i];
+            }
+            break;
+          case 2:
+            for (int i = 1; i <= 21; i++) {
+              images[i] = helpList[i];
+            }
+            break;
+          case 3:
+            for (int i = 8; i <= 14; i++) {
+              a = helpList[i];
+              helpList[i] = helpList[i + 7];
+              helpList[i + 7] = a;
+            }
+            for (int i = 1; i <= 21; i++) {
+              images[i] = helpList[i];
+            }
+            break;
+        }
+      });
     });
+
   }
 
   @override
@@ -198,27 +229,18 @@ class _CardsDisplayState extends State<CardsDisplay> {
               ...List.generate(
                   11,
                   (index) => Positioned(
+                      width: 130,
                       top: 0,
-                      left: move * index + 100,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          minWidth: 80,
-                          maxWidth: 130,
-                        ),
+                      left: move * index * MediaQuery.of(context).size.width/11 * 0.01,
                         child: images[index],
-                      ))),
+                      )),
               ...List.generate(
                   11,
                   (index) => Positioned(
+                      width: 130,
                       top: 180,
-                      left: move * index + 100,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          minWidth: 80,
-                          maxWidth: 130,
-                        ),
-                        child: images[index + 11],
-                      )))
+                      left: move * index * MediaQuery.of(context).size.width/11 * 0.01,
+                      child: images[index + 11]))
             ]
                 /*List.generate(
                     21,
@@ -252,7 +274,15 @@ class _CardsDisplayState extends State<CardsDisplay> {
             child: Column(
               children: [
                 Expanded(
-                  child: ImgCol(number: 1),
+                  child: Stack(
+                    children: List.generate(
+                        7,
+                        (index) => Positioned(
+                              width: 130,
+                              top: index * animation.value * MediaQuery.of(context).size.height/7 * 0.01,
+                              child: images[1 + index * 3],
+                            )),
+                  ),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 20),
@@ -268,7 +298,15 @@ class _CardsDisplayState extends State<CardsDisplay> {
             child: Column(
               children: [
                 Expanded(
-                  child: ImgCol(number: 2),
+                  child: Stack(
+                    children: List.generate(
+                        7,
+                        (index) => Positioned(
+                              width: 130,
+                              top: index * animation.value * MediaQuery.of(context).size.height/7 * 0.01,
+                              child: images[2 + index * 3],
+                            )),
+                  ),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 20),
@@ -284,7 +322,15 @@ class _CardsDisplayState extends State<CardsDisplay> {
             child: Column(
               children: [
                 Expanded(
-                  child: ImgCol(number: 3),
+                  child: Stack(
+                    children: List.generate(
+                        7,
+                        (index) => Positioned(
+                              width: 130,
+                              top: index * animation.value * MediaQuery.of(context).size.height/7 * 0.01,
+                              child: images[3 + index * 3],
+                            )),
+                  ),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 20),
@@ -299,6 +345,12 @@ class _CardsDisplayState extends State<CardsDisplay> {
       );
     }
   }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 }
 
 void main() {
@@ -308,7 +360,11 @@ void main() {
       home: Scaffold(
         backgroundColor: Color.fromRGBO(69, 152, 66, 0.9),
         body: Center(
-          child: CardsDisplay(),
+          child: FractionallySizedBox(
+            alignment: Alignment.center,
+              widthFactor: 0.9,
+              child: CardsDisplay()
+            ,
         ),
-      )));
+      ))));
 }
