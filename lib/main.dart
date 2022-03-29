@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 List<Image> images =
     List.generate(22, (index) => Image.asset("assets/img/${index + 1}.png"));
 
-class ImgCol extends StatefulWidget {
+/*class ImgCol extends StatefulWidget {
   const ImgCol(
       {required this.number,
       required this.animation,
@@ -62,7 +62,7 @@ class _ImgColState extends State<ImgCol> with SingleTickerProviderStateMixin {
               )),
     );
   }
-}
+}*/
 
 /*class ImgCol extends StatelessWidget {
   const ImgCol({required this.number, Key? key}) : super(key: key);
@@ -106,6 +106,7 @@ class _CardsDisplayState extends State<CardsDisplay>
   late AnimationController controller;
   late Animation<double> curve;
 
+  bool mainAnimIsCompleted = false;
   bool isPlaying = false;
   int columnChoice = 0;
   int _choiceCount = 0;
@@ -135,10 +136,11 @@ class _CardsDisplayState extends State<CardsDisplay>
   }
 
   void _chooseColumn(int num) {
-    if (animation.isCompleted) {  //почему не работает без if?
+    if (animation.isCompleted) {
+      //почему не работает без if?
       controller.reverse();
     }
-    Future.delayed(const Duration(milliseconds: 2500), (){
+    Future.delayed(const Duration(milliseconds: 2500), () {
       setState(() {
         _choiceCount++;
         columnChoice = num;
@@ -180,7 +182,6 @@ class _CardsDisplayState extends State<CardsDisplay>
         }
       });
     });
-
   }
 
   @override
@@ -224,14 +225,25 @@ class _CardsDisplayState extends State<CardsDisplay>
           tween: Tween<double>(begin: 0.0, end: 70.0),
           duration: const Duration(milliseconds: 2500),
           curve: Curves.easeInCubic,
+          onEnd: () {                           //не работает
+            setState(() {
+              () {
+                mainAnimIsCompleted = true;
+              };
+            });
+          },
           builder: (_, double move, __) {
             return Stack(children: [
               ...List.generate(
                   11,
                   (index) => Positioned(
-                      width: 130,
-                      top: 0,
-                      left: move * index * MediaQuery.of(context).size.width/11 * 0.01,
+                        width: 130,
+                        top: 0,
+                        left: move *
+                            index *
+                            MediaQuery.of(context).size.width /
+                            11 *
+                            0.01,
                         child: images[index],
                       )),
               ...List.generate(
@@ -239,7 +251,11 @@ class _CardsDisplayState extends State<CardsDisplay>
                   (index) => Positioned(
                       width: 130,
                       top: 180,
-                      left: move * index * MediaQuery.of(context).size.width/11 * 0.01,
+                      left: move *
+                          index *
+                          MediaQuery.of(context).size.width /
+                          11 *
+                          0.01,
                       child: images[index + 11]))
             ]
                 /*List.generate(
@@ -258,18 +274,50 @@ class _CardsDisplayState extends State<CardsDisplay>
                 );
           },
         ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: _changeToVertical,
-          label: const Text("Сыграть"),
+        floatingActionButton: ElevatedButton(
+          onPressed: mainAnimIsCompleted ? _changeToVertical : _changeToVertical,
+          child: const Text("Сыграть"),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       );
     } else {
       return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        textDirection: TextDirection.ltr,
-        children: [
-          Container(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          textDirection: TextDirection.ltr,
+          children: List.generate(
+            3,
+            (num) => SizedBox(
+              width: 130,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Stack(
+                      children: List.generate(
+                          7,
+                          (index) => Positioned(
+                                width: 130,
+                                top: index *
+                                    animation.value *
+                                    MediaQuery.of(context).size.height /
+                                    7 *
+                                    0.01,
+                                // индекс (0 - 2) + 1 = номер колонки, умножение на 3 для правильного разложения карт(в каждый столбец по порядку, т.е. 1 столбец - 1, 4, 7...)
+                                child: images[num + 1 + index * 3],
+                              )),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: ElevatedButton(
+                        onPressed: () => _chooseColumn(num + 1),
+                        child: const Text("Выбрать")),
+                  )
+                ],
+              ),
+            ),
+          )
+          /*[
+          SizedBox(
             width: 130,
             child: Column(
               children: [
@@ -293,7 +341,7 @@ class _CardsDisplayState extends State<CardsDisplay>
               ],
             ),
           ),
-          Container(
+          SizedBox(
             width: 130,
             child: Column(
               children: [
@@ -317,7 +365,7 @@ class _CardsDisplayState extends State<CardsDisplay>
               ],
             ),
           ),
-          Container(
+          SizedBox(
             width: 130,
             child: Column(
               children: [
@@ -341,8 +389,8 @@ class _CardsDisplayState extends State<CardsDisplay>
               ],
             ),
           ),
-        ],
-      );
+        ],*/
+          );
     }
   }
 
@@ -358,13 +406,12 @@ void main() {
       title: 'Card Focus',
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Color.fromRGBO(69, 152, 66, 0.9),
-        body: Center(
-          child: FractionallySizedBox(
-            alignment: Alignment.center,
+          backgroundColor: Color.fromRGBO(69, 152, 66, 0.9),
+          body: Center(
+            child: FractionallySizedBox(
+              alignment: Alignment.center,
               widthFactor: 0.9,
-              child: CardsDisplay()
-            ,
-        ),
-      ))));
+              child: CardsDisplay(),
+            ),
+          ))));
 }
