@@ -74,8 +74,10 @@ class CardsDisplay extends StatefulWidget {
 class _CardsDisplayState extends State<CardsDisplay>
     with SingleTickerProviderStateMixin {
   late Animation<double> animation;
+  late Animation<double> shirtAnimation;
   late AnimationController controller;
   late Animation<double> curve;
+  late Animation<double> secondMainAnimation;
 
   bool mainAnimIsCompleted = false;
   bool isCardChosen = true;
@@ -87,6 +89,8 @@ class _CardsDisplayState extends State<CardsDisplay>
     super.initState();
     controller = AnimationController(
         duration: const Duration(milliseconds: 2500), vsync: this);
+    shirtAnimation = Tween<double>(begin: 0.0, end: 180.0).animate(CurvedAnimation(parent: controller, curve: Curves.easeOutCubic));
+    secondMainAnimation = Tween<double>(begin: 0.0, end: 180.0).animate(CurvedAnimation(parent: controller, curve: Curves.easeOutCubic));
     curve = CurvedAnimation(parent: controller, curve: Curves.easeInCubic);
     animation = Tween<double>(begin: 0.0, end: 60.0).animate(curve)
       ..addListener(() {
@@ -196,15 +200,6 @@ class _CardsDisplayState extends State<CardsDisplay>
           tween: Tween<double>(begin: 0.0, end: 70.0),
           duration: const Duration(milliseconds: 2500),
           curve: Curves.easeInCubic,
-          onEnd: () {
-            //не работает
-            setState(() {
-              () {
-                mainAnimIsCompleted = true;
-                print('dgdgd');
-              };
-            });
-          },
           builder: (_, double move, __) {
             return Stack(children: [
               ...List.generate(
@@ -246,6 +241,7 @@ class _CardsDisplayState extends State<CardsDisplay>
 
                 );
           },
+          onEnd: () => print('dgdgd'),
         ),
         floatingActionButton: ElevatedButton(
           onPressed: mainAnimIsCompleted ? _changeToVertical : _changeToVertical,
@@ -279,7 +275,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                               )),
                       Positioned(
                           width: 130,
-                          top: -animation.value * 3,
+                          top: -shirtAnimation.value,
                           child: images[0]
                       )
                     ]),
