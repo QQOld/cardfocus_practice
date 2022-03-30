@@ -89,10 +89,12 @@ class _CardsDisplayState extends State<CardsDisplay>
     super.initState();
     controller = AnimationController(
         duration: const Duration(milliseconds: 2500), vsync: this);
-    shirtAnimation = Tween<double>(begin: 0.0, end: 180.0).animate(CurvedAnimation(parent: controller, curve: Curves.easeOutCubic));
-    secondMainAnimation = Tween<double>(begin: 0.0, end: 180.0).animate(CurvedAnimation(parent: controller, curve: Curves.easeOutCubic));
+    shirtAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn));
+    secondMainAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: controller, curve: Curves.easeOutCubic));
     curve = CurvedAnimation(parent: controller, curve: Curves.easeInCubic);
-    animation = Tween<double>(begin: 0.0, end: 60.0).animate(curve)
+    animation = Tween<double>(begin: 0.0, end: 1.0).animate(curve)
       ..addListener(() {
         setState(() {});
       })
@@ -197,11 +199,13 @@ class _CardsDisplayState extends State<CardsDisplay>
       return Scaffold(
         backgroundColor: Colors.transparent,
         body: TweenAnimationBuilder(
-          tween: Tween<double>(begin: 0.0, end: 70.0),
+          tween: Tween<double>(begin: 0.0, end: 1.0),
           duration: const Duration(milliseconds: 2500),
           curve: Curves.easeInCubic,
           builder: (_, double move, __) {
-            return Stack(children: [
+            return Stack(
+                clipBehavior: Clip.none,
+                children: [
               ...List.generate(
                   11,
                   (index) => Positioned(
@@ -209,22 +213,20 @@ class _CardsDisplayState extends State<CardsDisplay>
                         top: 0,
                         left: move *
                             index *
-                            MediaQuery.of(context).size.width /
-                            11 *
-                            0.01,
+                            MediaQuery.of(context).size.width *
+                            (1/11),
                         child: images[index],
                       )),
               ...List.generate(
                   11,
                   (index) => Positioned(
-                      width: 130,
-                      top: 180,
-                      left: move *
-                          index *
-                          MediaQuery.of(context).size.width /
-                          11 *
-                          0.01,
-                      child: images[index + 11]))
+                        width: 130,
+                        top: 180,
+                        left: move *
+                            index *
+                            MediaQuery.of(context).size.width *
+                            (1/11),
+                        child: images[index + 11]))
             ]
                 /*List.generate(
                     21,
@@ -241,10 +243,10 @@ class _CardsDisplayState extends State<CardsDisplay>
 
                 );
           },
-          onEnd: () => print('dgdgd'),
+          onEnd: () => setState(() => mainAnimIsCompleted = true),
         ),
         floatingActionButton: ElevatedButton(
-          onPressed: mainAnimIsCompleted ? _changeToVertical : _changeToVertical,
+          onPressed: mainAnimIsCompleted ? _changeToVertical : null,
           child: const Text("Сыграть"),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -260,24 +262,24 @@ class _CardsDisplayState extends State<CardsDisplay>
               child: Column(
                 children: [
                   Expanded(
-                    child: Stack(children: [
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                        children: [
                       ...List.generate(
                           7,
                           (index) => Positioned(
                                 width: 130,
                                 top: index *
                                     animation.value *
-                                    MediaQuery.of(context).size.height /
-                                    7 *
-                                    0.01,
+                                    MediaQuery.of(context).size.height *
+                                    1/12,
                                 // индекс (0..2) + 1 = номер колонки, умножение на 3 для правильного разложения карт(в каждый столбец по порядку, т.е. 1 столбец - 1, 4, 7...)
                                 child: images[num + 1 + index * 3],
                               )),
                       Positioned(
                           width: 130,
-                          top: -shirtAnimation.value,
-                          child: images[0]
-                      )
+                          top: -shirtAnimation.value * 205,
+                          child: images[0])
                     ]),
                   ),
                   Container(
@@ -382,10 +384,9 @@ void main() {
       home: Scaffold(
           backgroundColor: Color.fromRGBO(69, 152, 66, 0.9),
           body: Center(
-            child: FractionallySizedBox(
-              alignment: Alignment.center,
-              widthFactor: 0.9,
-              child: CardsDisplay(),
+            child: Padding(
+              padding: EdgeInsets.all(20),
+                child: CardsDisplay()
             ),
           ))));
 }
