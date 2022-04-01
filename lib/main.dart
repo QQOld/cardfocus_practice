@@ -329,7 +329,15 @@ class _CardsDisplayState extends State<CardsDisplay>
                         padding: const EdgeInsets.all(20),
                         margin: const EdgeInsets.only(bottom: 35),
                         decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white, width: 2)),
+                          border: Border.all(color: Colors.white, width: 2),
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.black,
+                                blurRadius: 5,
+                                blurStyle: BlurStyle.outer)
+                          ],
+                        ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -337,9 +345,10 @@ class _CardsDisplayState extends State<CardsDisplay>
                               margin: const EdgeInsets.only(bottom: 20),
                               child: Text(
                                   "Привет, я бы хотел продемонстрировать тебе свои телепатические силы. Не веришь? Я докажу тебе это, если ты сыграешь со мной в мини игру."
-                                  "Тебе лишь надо загадать одну карту их тех, что ты видишь. Потом 3 раза выбери колонку, в которой находится твоя карта. Всё просто.",
+                                  "Тебе лишь надо загадать одну карту иp тех, что ты увидишь на экране. Потом 3 раза выбери колонку, в которой находится твоя карта. Всё просто.",
                                   style: TextStyle(
                                       color: Colors.white,
+                                      fontFamily: 'ComicSansMS',
                                       fontStyle: FontStyle.italic,
                                       fontSize:
                                           MediaQuery.of(context).size.height <
@@ -351,17 +360,50 @@ class _CardsDisplayState extends State<CardsDisplay>
                                               ? 14
                                               : 16)),
                             ),
-                            ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    isVisible = false;
-                                    Future.delayed(
-                                        const Duration(milliseconds: 1100), () {
-                                      startAnimController.forward();
+                            Container(
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.white, width: 3),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: OutlinedButton(
+                                  style: ButtonStyle(
+                                    padding: MaterialStateProperty.all(
+                                        const EdgeInsets.symmetric(
+                                            vertical: 13, horizontal: 10)),
+                                    /*backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),*/
+                                    backgroundColor: MaterialStateProperty
+                                        .resolveWith<Color?>(
+                                      (Set<MaterialState> states) {
+                                        if (states
+                                            .contains(MaterialState.hovered))
+                                          return Colors.white.withOpacity(0.1);
+                                        return null;
+                                      },
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      isVisible = false;
+                                      Future.delayed(
+                                          const Duration(milliseconds: 1100),
+                                          () {
+                                        startAnimController.forward();
+                                      });
                                     });
-                                  });
-                                },
-                                child: const Text("Поехали"))
+                                  },
+                                  child: const Text(
+                                    "Поехали",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontStyle: FontStyle.italic,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "ComicSansMS",
+                                      letterSpacing: 1.5,
+                                    ),
+                                  )),
+                            )
                           ],
                         ),
                       )
@@ -469,8 +511,8 @@ class _CardsDisplayState extends State<CardsDisplay>
                                   // индекс (0..2) + 1 = номер колонки, умножение на 3 для правильного разложения карт(в каждый столбец по порядку, т.е. 1 столбец - 1, 4, 7...)
                                   child: MouseRegion(
                                     onEnter: animation.isCompleted
-                                        ? (enter) => setState(
-                                            () => onWhichColumnPointerIs = num + 1)
+                                        ? (enter) => setState(() =>
+                                            onWhichColumnPointerIs = num + 1)
                                         : null,
                                     onExit: (exit) => setState(
                                         () => onWhichColumnPointerIs = 0),
