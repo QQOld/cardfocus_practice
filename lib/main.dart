@@ -130,20 +130,19 @@ class _CardsDisplayState extends State<CardsDisplay>
   bool mainAnimIsCompleted = false;
   bool isCardChosen = true;
   bool isShuffling = false;
-  bool isReady = false;
   bool isVisible = true;
 
   int columnChoice = 0;
   int _choiceCount = 0;
   int onWhichColumnPointerIs = 0;
-  final columnAnimDuration = 2000;
+  final columnAnimDuration = 1500;
 
   @override
   void initState() {
     super.initState();
 
     startAnimController = AnimationController(
-        duration: const Duration(milliseconds: 2500), vsync: this);
+        duration: const Duration(milliseconds: 1100), vsync: this);
     startAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(parent: startAnimController, curve: Curves.easeInQuad))
       ..addListener(() {
@@ -211,7 +210,7 @@ class _CardsDisplayState extends State<CardsDisplay>
       //почему не работает без if?
       controller.reverse();
     }
-    Future.delayed(Duration(milliseconds: columnAnimDuration), () {
+    Future.delayed(Duration(milliseconds: columnAnimDuration + 1700), () {
       setState(() {
         _choiceCount++;
         columnChoice = num;
@@ -230,29 +229,30 @@ class _CardsDisplayState extends State<CardsDisplay>
             tween: Tween<double>(begin: 0.0, end: 1.0),
             duration: const Duration(milliseconds: 3000),
             builder: (_, double opacity, __) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 20),
-                    child: const Text(
-                      "Ваша карта:",
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+              return Opacity(
+                opacity: opacity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 20),
+                      child: Text(
+                        "Я же говорил",
+                        style: TextStyle(
+                          fontFamily: "ComicSansMS",
+                          fontSize: 26*opacity,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                  ),
-                  Opacity(
-                    opacity: opacity,
-                    child: SizedBox(
-                      width: 300*opacity,
+                    SizedBox(
+                      width: 246*opacity,
                       child: images[11],
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               );
             }),
       );
@@ -326,9 +326,11 @@ class _CardsDisplayState extends State<CardsDisplay>
                         duration: const Duration(milliseconds: 1000),
                         constraints:
                             const BoxConstraints(minHeight: 0, maxHeight: 400),
-                        width: MediaQuery.of(context).size.width * 0.7,
-                        padding: const EdgeInsets.all(20),
-                        margin: const EdgeInsets.only(bottom: 35),
+                        width: MediaQuery.of(context).size.width <= 660 || MediaQuery.of(context).size.height <= 660
+                            ? MediaQuery.of(context).size.width * 0.9
+                            : MediaQuery.of(context).size.width * 0.7,
+                        padding: EdgeInsets.all(MediaQuery.of(context).size.width <= 660 || MediaQuery.of(context).size.height <= 660 ? 8 : 20),
+                        margin: const EdgeInsets.only(bottom: 25),
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.white, width: 2),
                           borderRadius: BorderRadius.circular(8),
@@ -390,11 +392,11 @@ class _CardsDisplayState extends State<CardsDisplay>
                                     });
                                   });
                                 },
-                                child: const Text(
+                                child: Text(
                                   "Поехали",
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 14,
+                                    fontSize: MediaQuery.of(context).size.width <= 660 || MediaQuery.of(context).size.height <= 660 ? 12 : 14,
                                     fontStyle: FontStyle.italic,
                                     fontWeight: FontWeight.w600,
                                     fontFamily: "ComicSansMS",
@@ -412,29 +414,32 @@ class _CardsDisplayState extends State<CardsDisplay>
                   Container(),
                   ...List.generate(
                       11,
-                      (index) => Positioned(
+                      (index) => AnimatedPositioned(
+                            duration: const Duration(milliseconds: 900),
                             width: calcCardSize(context),
                             top: 0,
                             left: startAnimation.value *
                                 index *
                                 (MediaQuery.of(context).size.width - 130) *
                                 (1 / 11),
-                            child: images[index],
+                            child: images[index + 11],
                           )),
                   ...List.generate(
                       11,
-                      (index) => Positioned(
+                      (index) => AnimatedPositioned(
+                          duration: const Duration(milliseconds: 900),
                           width: calcCardSize(context),
-                          top: MediaQuery.of(context).size.height > 660
-                              ? 180
-                              : MediaQuery.of(context).size.height -
-                                  calcCardHeight(context) -
-                                  300,
+                          top: isVisible
+                              ? 0 : MediaQuery.of(context).size.height > 500
+                                ? 180
+                                : MediaQuery.of(context).size.height -
+                                    calcCardHeight(context) -
+                                    160,
                           left: startAnimation.value *
                               index *
                               (MediaQuery.of(context).size.width - 130) *
                               (1 / 11),
-                          child: images[index + 11]))
+                          child: images[10 - index]))
                 ]),
               ),
             ],
@@ -556,10 +561,10 @@ class _CardsDisplayState extends State<CardsDisplay>
                 ),
                 //Палец
                 AnimatedPositioned(
-                  duration: const Duration(milliseconds: 800),
-                  width: 80,
+                  duration: const Duration(milliseconds: 700),
+                  width: calcCardSize(context) - 30,
                   bottom: onWhichColumnPointerIs == 0
-                      ? -150
+                      ? -180
                       : MediaQuery.of(context).size.height / 13,
                   left: onWhichColumnPointerIs == 0
                       ? MediaQuery.of(context).size.width / 2 - 40
@@ -578,6 +583,7 @@ class _CardsDisplayState extends State<CardsDisplay>
   @override
   void dispose() {
     controller.dispose();
+    startAnimController.dispose();
     super.dispose();
   }
 }
