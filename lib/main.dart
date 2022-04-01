@@ -247,7 +247,8 @@ class _CardsDisplayState extends State<CardsDisplay>
                   ),
                   Opacity(
                     opacity: opacity,
-                    child: Container(
+                    child: SizedBox(
+                      width: 300*opacity,
                       child: images[11],
                     ),
                   )
@@ -262,7 +263,7 @@ class _CardsDisplayState extends State<CardsDisplay>
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              HelloText(isReady: isReady),
+              //HelloText(isReady: isReady),
               Flexible(
                 flex: 1,
                 child: TweenAnimationBuilder(
@@ -304,7 +305,7 @@ class _CardsDisplayState extends State<CardsDisplay>
           ),
         ),
         floatingActionButton: ElevatedButton(
-          onPressed: isReady && mainAnimIsCompleted ? _changeToVertical : null,
+          onPressed: mainAnimIsCompleted ? _changeToVertical : null,
           child: const Text("Сыграть"),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -360,50 +361,46 @@ class _CardsDisplayState extends State<CardsDisplay>
                                               ? 14
                                               : 16)),
                             ),
-                            Container(
-                              decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: Colors.white, width: 3),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: OutlinedButton(
-                                  style: ButtonStyle(
-                                    padding: MaterialStateProperty.all(
-                                        const EdgeInsets.symmetric(
-                                            vertical: 13, horizontal: 10)),
-                                    /*backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),*/
-                                    backgroundColor: MaterialStateProperty
-                                        .resolveWith<Color?>(
-                                      (Set<MaterialState> states) {
-                                        if (states
-                                            .contains(MaterialState.hovered))
-                                          return Colors.white.withOpacity(0.1);
-                                        return null;
-                                      },
-                                    ),
+                            OutlinedButton(
+                                style: ButtonStyle(
+                                  padding: MaterialStateProperty.all(
+                                      const EdgeInsets.symmetric(
+                                          vertical: 15, horizontal: 12)),
+                                  backgroundColor:
+                                      MaterialStateProperty.resolveWith<Color?>(
+                                    (Set<MaterialState> states) {
+                                      if (states
+                                          .contains(MaterialState.hovered)) {
+                                        return Colors.white.withOpacity(0.1);
+                                      }
+                                      return null;
+                                    },
                                   ),
-                                  onPressed: () {
-                                    setState(() {
-                                      isVisible = false;
-                                      Future.delayed(
-                                          const Duration(milliseconds: 1100),
-                                          () {
-                                        startAnimController.forward();
-                                      });
+                                  side: MaterialStateProperty.all<BorderSide>(
+                                    const BorderSide(
+                                        width: 3.0, color: Colors.white),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    isVisible = false;
+                                    Future.delayed(
+                                        const Duration(milliseconds: 1100), () {
+                                      startAnimController.forward();
                                     });
-                                  },
-                                  child: const Text(
-                                    "Поехали",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontStyle: FontStyle.italic,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: "ComicSansMS",
-                                      letterSpacing: 1.5,
-                                    ),
-                                  )),
-                            )
+                                  });
+                                },
+                                child: const Text(
+                                  "Поехали",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontStyle: FontStyle.italic,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: "ComicSansMS",
+                                    letterSpacing: 1.5,
+                                  ),
+                                ))
                           ],
                         ),
                       )
@@ -443,11 +440,35 @@ class _CardsDisplayState extends State<CardsDisplay>
             ],
           ),
         ),
-        floatingActionButton: ElevatedButton(
-          onPressed:
-              startAnimation.isCompleted || isReady ? _changeToVertical : null,
-          child: const Text("Сыграть"),
-        ),
+        floatingActionButton: OutlinedButton(
+            style: ButtonStyle(
+              padding: MaterialStateProperty.all(
+                  const EdgeInsets.symmetric(vertical: 15, horizontal: 15)),
+              backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.hovered) &&
+                      startAnimation.isCompleted) {
+                    return Colors.white.withOpacity(0.1);
+                  }
+                  return Colors.transparent;
+                },
+              ),
+              side: MaterialStateProperty.all<BorderSide>(
+                const BorderSide(width: 3.0, color: Colors.white),
+              ),
+            ),
+            onPressed: startAnimation.isCompleted ? _changeToVertical : null,
+            child: const Text(
+              "Сыграем",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w600,
+                fontFamily: "ComicSansMS",
+                letterSpacing: 1.5,
+              ),
+            )),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       );
     } else {
@@ -535,7 +556,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                 ),
                 //Палец
                 AnimatedPositioned(
-                  duration: const Duration(milliseconds: 1000),
+                  duration: const Duration(milliseconds: 800),
                   width: 80,
                   bottom: onWhichColumnPointerIs == 0
                       ? -150
