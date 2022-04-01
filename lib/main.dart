@@ -8,6 +8,64 @@ import 'package:flutter/material.dart';
 List<Image> images =
     List.generate(22, (index) => Image.asset("assets/img/${index + 1}.png"));
 
+class HelloText extends StatefulWidget {
+  const HelloText({Key? key}) : super(key: key);
+
+  @override
+  _HelloTextState createState() => _HelloTextState();
+}
+
+class _HelloTextState extends State<HelloText> {
+  bool isVisible = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return ScaleTransition(scale: animation, child: child);
+      },
+      duration: const Duration(milliseconds: 1000),
+      child: isVisible
+          ? AnimatedContainer(
+              duration: const Duration(milliseconds: 1000),
+              constraints: const BoxConstraints(minHeight: 0, maxHeight: 400),
+              width: MediaQuery.of(context).size.width * 0.7,
+              padding: const EdgeInsets.all(20),
+              margin: const EdgeInsets.only(bottom: 35),
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white, width: 2)),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    child: Text(
+                        "Привет, я бы хотел продемонстрировать тебе свои телепатические силы. Не веришь? Я докажу тебе это, если ты сыграешь со мной в мини игру."
+                        "Тебе лишь надо загадать одну карту их тех, что ты видишь. Потом 3 раза выбери колонку, в которой находится твоя карта. Всё просто.",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontStyle: FontStyle.italic,
+                            fontSize:
+                                MediaQuery.of(context).size.height < 660 ||
+                                        MediaQuery.of(context).size.width < 660
+                                    ? 14
+                                    : 16)),
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          isVisible = false;
+                        });
+                      },
+                      child: const Text("Поехали"))
+                ],
+              ),
+            )
+          : Container(),
+    );
+  }
+}
+
 class ShuffleCalc {
   static List<Image> createHelpList() {
     List<Image> helpList = List.generate(22, (index) => images[index]);
@@ -60,30 +118,51 @@ class CardsDisplay extends StatefulWidget {
 }
 
 class _CardsDisplayState extends State<CardsDisplay>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
+  late AnimationController startAnimController;
+  late Animation<double> startAnimation;
   late Animation<double> animation;
   late Animation<double> shirtAnimation;
-  late AnimationController controller;
+  late AnimationController controller; //Анимация сжатия/разжатия колонок
   late Animation<double> curve;
   late Animation<double> secondMainAnimation;
 
   bool mainAnimIsCompleted = false;
   bool isCardChosen = true;
   bool isShuffling = false;
+  bool isReady = false;
+  bool isVisible = true;
+
   int columnChoice = 0;
   int _choiceCount = 0;
+  int onWhichColumnPointerIs = 0;
+  final columnAnimDuration = 2000;
 
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(
+
+    startAnimController = AnimationController(
         duration: const Duration(milliseconds: 2500), vsync: this);
+    startAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: startAnimController, curve: Curves.easeInQuad))
+      ..addListener(() {
+        setState(() {});
+      })
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          setState(() {});
+        }
+      });
+
+    controller = AnimationController(
+        duration: Duration(milliseconds: columnAnimDuration), vsync: this);
     shirtAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn));
     secondMainAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(parent: controller, curve: Curves.easeOutCubic));
-    curve = CurvedAnimation(parent: controller, curve: Curves.easeInCubic);
-    animation = Tween<double>(begin: 0.0, end: 1.0).animate(curve)
+    animation = Tween<double>(begin: 0.0, end: 1.0)
+        .animate(CurvedAnimation(parent: controller, curve: Curves.easeInCubic))
       ..addListener(() {
         setState(() {});
       })
@@ -103,12 +182,21 @@ class _CardsDisplayState extends State<CardsDisplay>
   }
 
   double calcCardSize(BuildContext context) {
-    return MediaQuery.of(context).size.height < 520 ||
-            MediaQuery.of(context).size.width < 520
+    return MediaQuery.of(context).size.height < 661 ||
+            MediaQuery.of(context).size.width < 661
         ? min(MediaQuery.of(context).size.width,
                 MediaQuery.of(context).size.height) /
-            4
+            5
         : 130;
+  }
+
+  double calcCardHeight(BuildContext context) {
+    return calcCardSize(context) * (346 / 248);
+  }
+
+  double calcPointerPosition(BuildContext context, int column) {
+    return (MediaQuery.of(context).size.width / 4) * onWhichColumnPointerIs -
+        calcCardSize(context) / 2;
   }
 
   void _changeToVertical() {
@@ -123,48 +211,12 @@ class _CardsDisplayState extends State<CardsDisplay>
       //почему не работает без if?
       controller.reverse();
     }
-    Future.delayed(const Duration(milliseconds: 2500), () {
+    Future.delayed(Duration(milliseconds: columnAnimDuration), () {
       setState(() {
         _choiceCount++;
         columnChoice = num;
 
         ShuffleCalc.shuffleAfterChoice(columnChoice);
-        /*Image a;
-        List<Image> helpList = List.generate(22, (index) => images[index]);
-
-        for (int i = 0; i <= 2; i++) {
-          for (int j = i * 7 + 1, k = 1 + i; j <= 7 + i * 7; j++, k += 3) {
-            helpList[j] = images[k];
-          }
-        }
-
-        switch (columnChoice) {
-          case 1:
-            for (int i = 1; i <= 7; i++) {
-              a = helpList[i];
-              helpList[i] = helpList[i + 7];
-              helpList[i + 7] = a;
-            }
-            for (int i = 1; i <= 21; i++) {
-              images[i] = helpList[i];
-            }
-            break;
-          case 2:
-            for (int i = 1; i <= 21; i++) {
-              images[i] = helpList[i];
-            }
-            break;
-          case 3:
-            for (int i = 8; i <= 14; i++) {
-              a = helpList[i];
-              helpList[i] = helpList[i + 7];
-              helpList[i + 7] = a;
-            }
-            for (int i = 1; i <= 21; i++) {
-              images[i] = helpList[i];
-            }
-            break;
-        }*/
       });
     });
   }
@@ -204,46 +256,154 @@ class _CardsDisplayState extends State<CardsDisplay>
             }),
       );
     } else if (isCardChosen) {
+      /*return Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              HelloText(isReady: isReady),
+              Flexible(
+                flex: 1,
+                child: TweenAnimationBuilder(
+                  tween: Tween<double>(begin: 0.0, end: 1.0),
+                  duration: const Duration(milliseconds: 2500),
+                  curve: Curves.easeInCubic,
+                  builder: (_, double move, __) {
+                    return Stack(clipBehavior: Clip.none, children: [
+                      Container(),
+                      ...List.generate(
+                          11,
+                          (index) => Positioned(
+                                width: calcCardSize(context),
+                                top: 0,
+                                left: move *
+                                    index *
+                                    (MediaQuery.of(context).size.width - 130) *
+                                    (1 / 11),
+                                child: images[index],
+                              )),
+                      ...List.generate(
+                          11,
+                          (index) => Positioned(
+                              width: calcCardSize(context),
+                              top: MediaQuery.of(context).size.height > 660
+                                  ? 180
+                                  : MediaQuery.of(context).size.height - calcCardHeight(context) - 300,
+                              left: move *
+                                  index *
+                                  (MediaQuery.of(context).size.width - 130) *
+                                  (1 / 11),
+                              child: images[index + 11]))
+                    ]);
+                  },
+                  onEnd: () => setState(() => mainAnimIsCompleted = true),
+                ),
+              ),
+            ],
+          ),
+        ),
+        floatingActionButton: ElevatedButton(
+          onPressed: isReady && mainAnimIsCompleted ? _changeToVertical : null,
+          child: const Text("Сыграть"),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      );*/
       return Scaffold(
         backgroundColor: Colors.transparent,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: TweenAnimationBuilder(
-            tween: Tween<double>(begin: 0.0, end: 1.0),
-            duration: const Duration(milliseconds: 2500),
-            curve: Curves.easeInCubic,
-            builder: (_, double move, __) {
-              return Stack(clipBehavior: Clip.none, children: [
-                ...List.generate(
-                    11,
-                    (index) => Positioned(
+          child: Column(
+            children: [
+              AnimatedSwitcher(
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return ScaleTransition(scale: animation, child: child);
+                },
+                duration: const Duration(milliseconds: 1000),
+                child: isVisible
+                    ? AnimatedContainer(
+                        duration: const Duration(milliseconds: 1000),
+                        constraints:
+                            const BoxConstraints(minHeight: 0, maxHeight: 400),
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        padding: const EdgeInsets.all(20),
+                        margin: const EdgeInsets.only(bottom: 35),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white, width: 2)),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 20),
+                              child: Text(
+                                  "Привет, я бы хотел продемонстрировать тебе свои телепатические силы. Не веришь? Я докажу тебе это, если ты сыграешь со мной в мини игру."
+                                  "Тебе лишь надо загадать одну карту их тех, что ты видишь. Потом 3 раза выбери колонку, в которой находится твоя карта. Всё просто.",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontStyle: FontStyle.italic,
+                                      fontSize:
+                                          MediaQuery.of(context).size.height <
+                                                      660 ||
+                                                  MediaQuery.of(context)
+                                                          .size
+                                                          .width <
+                                                      660
+                                              ? 14
+                                              : 16)),
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isVisible = false;
+                                    Future.delayed(
+                                        const Duration(milliseconds: 1100), () {
+                                      startAnimController.forward();
+                                    });
+                                  });
+                                },
+                                child: const Text("Поехали"))
+                          ],
+                        ),
+                      )
+                    : Container(),
+              ),
+              Flexible(
+                flex: 1,
+                child: Stack(clipBehavior: Clip.none, children: [
+                  Container(),
+                  ...List.generate(
+                      11,
+                      (index) => Positioned(
+                            width: calcCardSize(context),
+                            top: 0,
+                            left: startAnimation.value *
+                                index *
+                                (MediaQuery.of(context).size.width - 130) *
+                                (1 / 11),
+                            child: images[index],
+                          )),
+                  ...List.generate(
+                      11,
+                      (index) => Positioned(
                           width: calcCardSize(context),
-                          top: 0,
-                          left: move *
+                          top: MediaQuery.of(context).size.height > 660
+                              ? 180
+                              : MediaQuery.of(context).size.height -
+                                  calcCardHeight(context) -
+                                  300,
+                          left: startAnimation.value *
                               index *
                               (MediaQuery.of(context).size.width - 130) *
                               (1 / 11),
-                          child: images[index],
-                        )),
-                ...List.generate(
-                    11,
-                    (index) => Positioned(
-                        width: calcCardSize(context),
-                        top: MediaQuery.of(context).size.height > 400
-                            ? 180
-                            : MediaQuery.of(context).size.height - 220,
-                        left: move *
-                            index *
-                            (MediaQuery.of(context).size.width - 130) *
-                            (1 / 11),
-                        child: images[index + 11]))
-              ]);
-            },
-            onEnd: () => setState(() => mainAnimIsCompleted = true),
+                          child: images[index + 11]))
+                ]),
+              ),
+            ],
           ),
         ),
         floatingActionButton: ElevatedButton(
-          onPressed: mainAnimIsCompleted ? _changeToVertical : null,
+          onPressed:
+              startAnimation.isCompleted || isReady ? _changeToVertical : null,
           child: const Text("Сыграть"),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -252,61 +412,101 @@ class _CardsDisplayState extends State<CardsDisplay>
       return Scaffold(
         backgroundColor: Colors.transparent,
         body: SizedBox(
-          width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
+          // Стек всего экрана
           child: Stack(
               clipBehavior: Clip.none,
               textDirection: TextDirection.ltr,
-              children: List.generate(
-                3,
-                (num) => AnimatedPositioned(
-                  duration: const Duration(milliseconds: 1500),
-                  curve: Curves.easeOutSine,
-                  left: isShuffling
-                      ? MediaQuery.of(context).size.width / 2 -
-                          calcCardSize(context) / 2
-                      : MediaQuery.of(context).size.width / 4 * (num + 1) -
-                          calcCardSize(context) / 2,
-                  width: calcCardSize(context),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    child: Stack(
-                        alignment: Alignment.center,
-                        clipBehavior: Clip.none,
-                        children: [
-                          ...List.generate(
-                              7,
-                              (index) => Positioned(
-                                    width: calcCardSize(context),
-                                    top: index *
-                                        animation.value *
-                                        MediaQuery.of(context).size.height *
-                                        1 /
-                                        12,
-                                    // индекс (0..2) + 1 = номер колонки, умножение на 3 для правильного разложения карт(в каждый столбец по порядку, т.е. 1 столбец - 1, 4, 7...)
-                                    child: images[num + 1 + index * 3],
-                                  )),
-                          Positioned(
-                              width: calcCardSize(context),
-                              top: -shirtAnimation.value * 205,
-                              child: images[0]),
-                          Positioned(
-                            width: 100,
-                            bottom: 50,
-                            child: IconButton(
-                              onPressed: () => _chooseColumn(num + 1),
-                              icon: const Image(
-                                  image: AssetImage("assets/finger.png")),
-                              iconSize: 100,
-                              color: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                            ),
-                          ),
-                        ]),
+              children: [
+                Container(),
+                ...List.generate(
+                  3,
+                  (num) => AnimatedPositioned(
+                    duration: const Duration(milliseconds: 1500),
+                    curve: Curves.easeOutSine,
+                    top: 0,
+                    bottom: 0,
+                    left: isShuffling
+                        ? MediaQuery.of(context).size.width / 2 -
+                            calcCardSize(context) / 2
+                        : MediaQuery.of(context).size.width / 4 * (num + 1) -
+                            calcCardSize(context) / 2,
+                    width: calcCardSize(context),
+                    // Стек всей колонкиа
+                    child: Stack(clipBehavior: Clip.none, children: [
+                      Container(),
+                      // Стек колонки карт
+                      Stack(clipBehavior: Clip.none, children: [
+                        Container(),
+                        Positioned(
+                            top: 0,
+                            bottom: MediaQuery.of(context).size.height -
+                                MediaQuery.of(context).size.height * 6 / 12 -
+                                calcCardHeight(context) -
+                                40,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    boxShadow: num + 1 == onWhichColumnPointerIs
+                                        ? const [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 10,
+                                                blurStyle: BlurStyle.outer)
+                                          ]
+                                        : null))),
+                        ...List.generate(
+                            7,
+                            (index) => Positioned(
+                                  width: calcCardSize(context),
+                                  top: index *
+                                      animation.value *
+                                      MediaQuery.of(context).size.height *
+                                      1 /
+                                      12,
+                                  // индекс (0..2) + 1 = номер колонки, умножение на 3 для правильного разложения карт(в каждый столбец по порядку, т.е. 1 столбец - 1, 4, 7...)
+                                  child: MouseRegion(
+                                    onEnter: animation.isCompleted
+                                        ? (enter) => setState(
+                                            () => onWhichColumnPointerIs = num + 1)
+                                        : null,
+                                    onExit: (exit) => setState(
+                                        () => onWhichColumnPointerIs = 0),
+                                    child: GestureDetector(
+                                      child: images[num + 1 + index * 3],
+                                      onTap: () {
+                                        onWhichColumnPointerIs = 0;
+                                        _chooseColumn(num + 1);
+                                      },
+                                    ),
+                                  ),
+                                )),
+                      ]),
+                      Positioned(
+                          width: calcCardSize(context),
+                          top: -shirtAnimation.value * 205,
+                          child: images[0]),
+                    ]),
                   ),
                 ),
-              )),
+                //Палец
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 1000),
+                  width: 80,
+                  bottom: onWhichColumnPointerIs == 0
+                      ? -150
+                      : MediaQuery.of(context).size.height / 13,
+                  left: onWhichColumnPointerIs == 0
+                      ? MediaQuery.of(context).size.width / 2 - 40
+                      : calcPointerPosition(context, onWhichColumnPointerIs),
+                  child: const Image(
+                    image: AssetImage("assets/finger.png"),
+                    repeat: ImageRepeat.noRepeat,
+                  ),
+                ),
+              ]),
         ),
       );
     }
