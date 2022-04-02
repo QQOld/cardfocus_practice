@@ -213,7 +213,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                         top: 0,
                         left: move *
                             index *
-                            MediaQuery.of(context).size.width *
+                            (MediaQuery.of(context).size.width - 130 ) *
                             (1/11),
                         child: images[index],
                       )),
@@ -224,7 +224,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                         top: 180,
                         left: move *
                             index *
-                            MediaQuery.of(context).size.width *
+                            (MediaQuery.of(context).size.width - 130 ) *
                             (1/11),
                         child: images[index + 11]))
             ]
@@ -285,7 +285,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     child: ElevatedButton(
-                        onPressed: () => _chooseColumn(num + 1),
+                        onPressed: animation.isCompleted ? () => _chooseColumn(num + 1) : null,
                         child: const Text("Выбрать")),
                   )
                 ],
