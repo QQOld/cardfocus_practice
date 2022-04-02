@@ -236,19 +236,19 @@ class _CardsDisplayState extends State<CardsDisplay>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      margin: const EdgeInsets.only(bottom: 20),
+                      margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height <= 500 ? 5 : 20),
                       child: Text(
                         "Я же говорил",
                         style: TextStyle(
                           fontFamily: "ComicSansMS",
-                          fontSize: 26*opacity,
+                          fontSize: MediaQuery.of(context).size.height <= 500 ? 18*opacity : 26*opacity,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
                     ),
                     SizedBox(
-                      width: 246*opacity,
+                      width: (calcCardSize(context) + 60)*opacity,
                       child: images[11],
                     )
                   ],
@@ -561,7 +561,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                 ),
                 //Палец
                 AnimatedPositioned(
-                  duration: const Duration(milliseconds: 700),
+                  duration: const Duration(milliseconds: 500),
                   width: calcCardSize(context) - 30,
                   bottom: onWhichColumnPointerIs == 0
                       ? -180
