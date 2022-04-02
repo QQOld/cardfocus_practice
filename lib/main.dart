@@ -3,69 +3,12 @@
 // 3 6 9 12 15 18 21
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 List<Image> images =
     List.generate(22, (index) => Image.asset("assets/img/${index + 1}.png"));
-
-/*class HelloText extends StatefulWidget {
-  const HelloText({Key? key}) : super(key: key);
-
-  @override
-  _HelloTextState createState() => _HelloTextState();
-}
-
-class _HelloTextState extends State<HelloText> {
-  bool isVisible = true;
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedSwitcher(
-      transitionBuilder: (Widget child, Animation<double> animation) {
-        return ScaleTransition(scale: animation, child: child);
-      },
-      duration: const Duration(milliseconds: 1000),
-      child: isVisible
-          ? AnimatedContainer(
-              duration: const Duration(milliseconds: 1000),
-              constraints: const BoxConstraints(minHeight: 0, maxHeight: 400),
-              width: MediaQuery.of(context).size.width * 0.7,
-              padding: const EdgeInsets.all(20),
-              margin: const EdgeInsets.only(bottom: 35),
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 2)),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 20),
-                    child: Text(
-                        "Привет, я бы хотел продемонстрировать тебе свои телепатические силы. Не веришь? Я докажу тебе это, если ты сыграешь со мной в мини игру."
-                        "Тебе лишь надо загадать одну карту их тех, что ты видишь. Потом 3 раза выбери колонку, в которой находится твоя карта. Всё просто.",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontStyle: FontStyle.italic,
-                            fontSize:
-                                MediaQuery.of(context).size.height < 660 ||
-                                        MediaQuery.of(context).size.width < 660
-                                    ? 14
-                                    : 16)),
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          isVisible = false;
-                        });
-                      },
-                      child: const Text("Поехали"))
-                ],
-              ),
-            )
-          : Container(),
-    );
-  }
-}*/
 
 class ShuffleCalc {
   static List<Image> createHelpList() {
@@ -237,19 +180,24 @@ class _CardsDisplayState extends State<CardsDisplay>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height <= 500 ? 5 : 20),
+                      margin: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height <= 500
+                              ? 5
+                              : 20),
                       child: Text(
                         "Я же говорил",
                         style: TextStyle(
                           fontFamily: "ComicSansMS",
-                          fontSize: MediaQuery.of(context).size.height <= 500 ? 18*opacity : 26*opacity,
+                          fontSize: MediaQuery.of(context).size.height <= 500
+                              ? 18 * opacity
+                              : 26 * opacity,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
                     ),
                     SizedBox(
-                      width: (calcCardSize(context) + 60)*opacity,
+                      width: (calcCardSize(context) + 60) * opacity,
                       child: images[11],
                     )
                   ],
@@ -258,59 +206,6 @@ class _CardsDisplayState extends State<CardsDisplay>
             }),
       );
     } else if (isCardChosen) {
-      /*return Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              //HelloText(isReady: isReady),
-              Flexible(
-                flex: 1,
-                child: TweenAnimationBuilder(
-                  tween: Tween<double>(begin: 0.0, end: 1.0),
-                  duration: const Duration(milliseconds: 2500),
-                  curve: Curves.easeInCubic,
-                  builder: (_, double move, __) {
-                    return Stack(clipBehavior: Clip.none, children: [
-                      Container(),
-                      ...List.generate(
-                          11,
-                          (index) => Positioned(
-                                width: calcCardSize(context),
-                                top: 0,
-                                left: move *
-                                    index *
-                                    (MediaQuery.of(context).size.width - 130) *
-                                    (1 / 11),
-                                child: images[index],
-                              )),
-                      ...List.generate(
-                          11,
-                          (index) => Positioned(
-                              width: calcCardSize(context),
-                              top: MediaQuery.of(context).size.height > 660
-                                  ? 180
-                                  : MediaQuery.of(context).size.height - calcCardHeight(context) - 300,
-                              left: move *
-                                  index *
-                                  (MediaQuery.of(context).size.width - 130) *
-                                  (1 / 11),
-                              child: images[index + 11]))
-                    ]);
-                  },
-                  onEnd: () => setState(() => mainAnimIsCompleted = true),
-                ),
-              ),
-            ],
-          ),
-        ),
-        floatingActionButton: ElevatedButton(
-          onPressed: mainAnimIsCompleted ? _changeToVertical : null,
-          child: const Text("Сыграть"),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      );*/
       return Scaffold(
         backgroundColor: Colors.transparent,
         body: Padding(
@@ -319,104 +214,108 @@ class _CardsDisplayState extends State<CardsDisplay>
             children: [
               AnimatedContainer(
                 // key: Key("Button$isVisible"),
-                duration: const Duration(milliseconds: 8000),
+                duration: const Duration(milliseconds: 1000),
                 clipBehavior: Clip.hardEdge,
-                      constraints:
-                          const BoxConstraints(minHeight: 0, maxHeight: 400),
-                      width: MediaQuery.of(context).size.width <= 660 || MediaQuery.of(context).size.height <= 660
-                          ? MediaQuery.of(context).size.width * 0.9
-                          : MediaQuery.of(context).size.width * 0.7,
-                      height: isVisible ? null : 0,
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.width <= 660 || MediaQuery.of(context).size.height <= 660 ? 8 : 20),
-                      margin: const EdgeInsets.only(bottom: 25),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white, width: 2),
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Colors.black,
-                              blurRadius: 5,
-                              blurStyle: BlurStyle.outer)
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            clipBehavior: Clip.hardEdge,
-                            decoration: const BoxDecoration(),
-                            margin: const EdgeInsets.only(bottom: 20),
-                            child: Text(
-                                "Привет, я бы хотел продемонстрировать тебе свои телепатические силы. Не веришь? Я докажу тебе это, если ты сыграешь со мной в мини игру."
-                                "Тебе лишь надо загадать одну карту иp тех, что ты увидишь на экране. Потом 3 раза выбери колонку, в которой находится твоя карта. Всё просто.",
+                constraints: const BoxConstraints(minHeight: 0, maxHeight: 200),
+                width: MediaQuery.of(context).size.width <= 660 ||
+                        MediaQuery.of(context).size.height <= 660
+                    ? MediaQuery.of(context).size.width * 0.9
+                    : MediaQuery.of(context).size.width * 0.7,
+                height: isVisible ? null : 0,
+                padding: EdgeInsets.all(
+                    MediaQuery.of(context).size.width <= 660 ||
+                            MediaQuery.of(context).size.height <= 660
+                        ? 8
+                        : 20),
+                margin: const EdgeInsets.only(bottom: 25),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white, width: 2),
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: const [
+                    BoxShadow(
+                        color: Colors.black,
+                        blurRadius: 5,
+                        blurStyle: BlurStyle.outer)
+                  ],
+                ),
+                child: Column(
+                  textDirection: TextDirection.ltr,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      flex: 3,
+                      child: Container(
+                        clipBehavior: Clip.hardEdge,
+                        decoration: const BoxDecoration(),
+                        margin: const EdgeInsets.only(bottom: 20),
+                        child: Text(
+                            "Привет, я бы хотел продемонстрировать тебе свои телепатические силы. Не веришь? Я докажу тебе это, если ты сыграешь со мной в мини игру."
+                            "Тебе лишь надо загадать одну карту иp тех, что ты увидишь на экране. Потом 3 раза выбери колонку, в которой находится твоя карта. Всё просто.",
+                            overflow: TextOverflow.clip,
+                            style: TextStyle(
                                 overflow: TextOverflow.clip,
-                                style: TextStyle(
-                                  overflow: TextOverflow.clip,
-                                    color: Colors.white,
-                                    fontFamily: 'ComicSansMS',
-                                    fontStyle: FontStyle.italic,
-                                    fontSize:
-                                        MediaQuery.of(context).size.height <
-                                                    660 ||
-                                                MediaQuery.of(context)
-                                                        .size
-                                                        .width <
-                                                    660
-                                            ? 14
-                                            : 16)),
-                          ),
-                          Container(
-                            decoration: const BoxDecoration(),
-                            clipBehavior: Clip.hardEdge,
-                            child: OutlinedButton(
-                              clipBehavior: Clip.hardEdge,
-                                style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all(
-                                      Size.zero),
-                                  padding: MaterialStateProperty.all(
-                                      const EdgeInsets.symmetric(
-                                          vertical: 15, horizontal: 12)),
-                                  backgroundColor:
-                                      MaterialStateProperty.resolveWith<Color?>(
-                                    (Set<MaterialState> states) {
-                                      if (states
-                                          .contains(MaterialState.hovered)) {
-                                        return Colors.white.withOpacity(0.1);
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  side: MaterialStateProperty.all<BorderSide>(
-                                    const BorderSide(
-                                        width: 3.0, color: Colors.white),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    isVisible = false;
-                                    Future.delayed(
-                                        const Duration(milliseconds: 1100), () {
-                                      startAnimController.forward();
-                                    });
-                                  });
-                                },
-                                child: Text(
-                                  "Поехали",
-                                  overflow: TextOverflow.clip,
-                                  style: TextStyle(
-                                    overflow: TextOverflow.clip,
-                                    color: Colors.white,
-                                    fontSize: MediaQuery.of(context).size.width <= 660 || MediaQuery.of(context).size.height <= 660 ? 12 : 14,
-                                    fontStyle: FontStyle.italic,
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: "ComicSansMS",
-                                    letterSpacing: 1.5,
-                                  ),
-                                )),
-                          )
-                        ],
+                                color: Colors.white,
+                                fontFamily: 'ComicSansMS',
+                                fontStyle: FontStyle.italic,
+                                fontSize: MediaQuery.of(context).size.height <
+                                            660 ||
+                                        MediaQuery.of(context).size.width < 660
+                                    ? 14
+                                    : 16)),
                       ),
                     ),
+                    Flexible(
+                      flex: 1,
+                      child: OutlinedButton(
+                          clipBehavior: Clip.hardEdge,
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all(Size.zero),
+                            padding: MaterialStateProperty.all(
+                                const EdgeInsets.symmetric(
+                                    vertical: 15, horizontal: 12)),
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color?>(
+                              (Set<MaterialState> states) {
+                                if (states.contains(MaterialState.hovered)) {
+                                  return Colors.white.withOpacity(0.1);
+                                }
+                                return null;
+                              },
+                            ),
+                            side: MaterialStateProperty.all<BorderSide>(
+                              const BorderSide(width: 3.0, color: Colors.white),
+                            ),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              isVisible = false;
+                              Future.delayed(const Duration(milliseconds: 1100),
+                                  () {
+                                startAnimController.forward();
+                              });
+                            });
+                          },
+                          child: Text(
+                            "Поехали",
+                            overflow: TextOverflow.clip,
+                            style: TextStyle(
+                              overflow: TextOverflow.clip,
+                              color: Colors.white,
+                              fontSize: MediaQuery.of(context).size.width <=
+                                          660 ||
+                                      MediaQuery.of(context).size.height <= 660
+                                  ? 12
+                                  : 14,
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: "ComicSansMS",
+                              letterSpacing: 1.5,
+                            ),
+                          )),
+                    )
+                  ],
+                ),
+              ),
               Flexible(
                 flex: 1,
                 child: Stack(clipBehavior: Clip.none, children: [
@@ -439,11 +338,12 @@ class _CardsDisplayState extends State<CardsDisplay>
                           duration: const Duration(milliseconds: 900),
                           width: calcCardSize(context),
                           top: isVisible
-                              ? 0 : MediaQuery.of(context).size.height > 500
-                                ? 180
-                                : MediaQuery.of(context).size.height -
-                                    calcCardHeight(context) -
-                                    160,
+                              ? 0
+                              : MediaQuery.of(context).size.height > 500
+                                  ? 180
+                                  : MediaQuery.of(context).size.height -
+                                      calcCardHeight(context) -
+                                      160,
                           left: startAnimation.value *
                               index *
                               (MediaQuery.of(context).size.width - 130) *
@@ -454,10 +354,41 @@ class _CardsDisplayState extends State<CardsDisplay>
             ],
           ),
         ),
-        floatingActionButton: OutlinedButton(
+        floatingActionButton: InkWell(
+          borderRadius: BorderRadius.circular(10),
+          hoverColor: Colors.white30.withOpacity(0.1),
+          onTap: startAnimation.isCompleted ? _changeToVertical : null,
+          child: AnimatedContainer(
+            padding: EdgeInsets.all(isVisible ? 5 : 8),
+            decoration: BoxDecoration(
+              border: Border.all(
+                  color:
+                      isVisible ? Colors.white.withOpacity(0.2) : Colors.white,
+                  width: 3),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            duration: const Duration(milliseconds: 2000),
+            child: AnimatedDefaultTextStyle(
+              style: TextStyle(
+                color: isVisible ? Colors.white.withOpacity(0.2) : Colors.white,
+                fontSize: isVisible ? 14 : 22,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w600,
+                fontFamily: "ComicSansMS",
+                letterSpacing: isVisible ? 1 : 2.5,
+              ),
+              duration: const Duration(milliseconds: 2000),
+              child: const Text(
+                "Сыграем",
+              ),
+            ),
+          ),
+        ),
+        /*OutlinedButton(
             style: ButtonStyle(
+              animationDuration: Duration(seconds: 2),
               padding: MaterialStateProperty.all(
-                  const EdgeInsets.symmetric(vertical: 15, horizontal: 15)),
+                  EdgeInsets.all(isVisible ? 15 : 20)),
               backgroundColor: MaterialStateProperty.resolveWith<Color?>(
                 (Set<MaterialState> states) {
                   if (states.contains(MaterialState.hovered) &&
@@ -468,21 +399,21 @@ class _CardsDisplayState extends State<CardsDisplay>
                 },
               ),
               side: MaterialStateProperty.all<BorderSide>(
-                const BorderSide(width: 3.0, color: Colors.white),
+                BorderSide(width: 3.0, color: isVisible ? Colors.white.withOpacity(0.2) : Colors.white),
               ),
             ),
             onPressed: startAnimation.isCompleted ? _changeToVertical : null,
-            child: const Text(
+            child: Text(
               "Сыграем",
               style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
+                color: isVisible ? Colors.white.withOpacity(0.2) : Colors.white,
+                fontSize: isVisible ? 14 : 20,
                 fontStyle: FontStyle.italic,
                 fontWeight: FontWeight.w600,
                 fontFamily: "ComicSansMS",
                 letterSpacing: 1.5,
               ),
-            )),
+            )),*/
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       );
     } else {
@@ -496,6 +427,31 @@ class _CardsDisplayState extends State<CardsDisplay>
               textDirection: TextDirection.ltr,
               children: [
                 Container(),
+                Positioned(
+                    top: MediaQuery.of(context).size.height * (6/12) + calcCardHeight(context) + calcCardHeight(context)/10,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 1200),
+                        opacity: isShuffling ? 0 : 1,
+                        child: Text(
+                  "Выбери колонку",
+                  style: TextStyle(
+                        color: isVisible
+                            ? Colors.white.withOpacity(0.2)
+                            : Colors.white,
+                        fontSize: MediaQuery.of(context).size.height <
+                            500 ||
+                            MediaQuery.of(context).size.width < 500 ? 14 : 20,
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "ComicSansMS",
+                        letterSpacing: 1.5,
+                  ),
+                ),
+                      ),
+                    )),
                 ...List.generate(
                   3,
                   (num) => AnimatedPositioned(
