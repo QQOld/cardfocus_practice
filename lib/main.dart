@@ -4,11 +4,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 List<Image> images =
     List.generate(22, (index) => Image.asset("assets/img/${index + 1}.png"));
 
-class HelloText extends StatefulWidget {
+/*class HelloText extends StatefulWidget {
   const HelloText({Key? key}) : super(key: key);
 
   @override
@@ -64,7 +65,7 @@ class _HelloTextState extends State<HelloText> {
           : Container(),
     );
   }
-}
+}*/
 
 class ShuffleCalc {
   static List<Image> createHelpList() {
@@ -316,55 +317,62 @@ class _CardsDisplayState extends State<CardsDisplay>
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              AnimatedSwitcher(
-                transitionBuilder: (Widget child, Animation<double> animation) {
-                  return ScaleTransition(scale: animation, child: child);
-                },
-                duration: const Duration(milliseconds: 1000),
-                child: isVisible
-                    ? AnimatedContainer(
-                        duration: const Duration(milliseconds: 1000),
-                        constraints:
-                            const BoxConstraints(minHeight: 0, maxHeight: 400),
-                        width: MediaQuery.of(context).size.width <= 660 || MediaQuery.of(context).size.height <= 660
-                            ? MediaQuery.of(context).size.width * 0.9
-                            : MediaQuery.of(context).size.width * 0.7,
-                        padding: EdgeInsets.all(MediaQuery.of(context).size.width <= 660 || MediaQuery.of(context).size.height <= 660 ? 8 : 20),
-                        margin: const EdgeInsets.only(bottom: 25),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white, width: 2),
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: const [
-                            BoxShadow(
-                                color: Colors.black,
-                                blurRadius: 5,
-                                blurStyle: BlurStyle.outer)
-                          ],
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(bottom: 20),
-                              child: Text(
-                                  "Привет, я бы хотел продемонстрировать тебе свои телепатические силы. Не веришь? Я докажу тебе это, если ты сыграешь со мной в мини игру."
-                                  "Тебе лишь надо загадать одну карту иp тех, что ты увидишь на экране. Потом 3 раза выбери колонку, в которой находится твоя карта. Всё просто.",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'ComicSansMS',
-                                      fontStyle: FontStyle.italic,
-                                      fontSize:
-                                          MediaQuery.of(context).size.height <
-                                                      660 ||
-                                                  MediaQuery.of(context)
-                                                          .size
-                                                          .width <
-                                                      660
-                                              ? 14
-                                              : 16)),
-                            ),
-                            OutlinedButton(
+              AnimatedContainer(
+                // key: Key("Button$isVisible"),
+                duration: const Duration(milliseconds: 8000),
+                clipBehavior: Clip.hardEdge,
+                      constraints:
+                          const BoxConstraints(minHeight: 0, maxHeight: 400),
+                      width: MediaQuery.of(context).size.width <= 660 || MediaQuery.of(context).size.height <= 660
+                          ? MediaQuery.of(context).size.width * 0.9
+                          : MediaQuery.of(context).size.width * 0.7,
+                      height: isVisible ? null : 0,
+                      padding: EdgeInsets.all(MediaQuery.of(context).size.width <= 660 || MediaQuery.of(context).size.height <= 660 ? 8 : 20),
+                      margin: const EdgeInsets.only(bottom: 25),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white, width: 2),
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Colors.black,
+                              blurRadius: 5,
+                              blurStyle: BlurStyle.outer)
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            clipBehavior: Clip.hardEdge,
+                            decoration: const BoxDecoration(),
+                            margin: const EdgeInsets.only(bottom: 20),
+                            child: Text(
+                                "Привет, я бы хотел продемонстрировать тебе свои телепатические силы. Не веришь? Я докажу тебе это, если ты сыграешь со мной в мини игру."
+                                "Тебе лишь надо загадать одну карту иp тех, что ты увидишь на экране. Потом 3 раза выбери колонку, в которой находится твоя карта. Всё просто.",
+                                overflow: TextOverflow.clip,
+                                style: TextStyle(
+                                  overflow: TextOverflow.clip,
+                                    color: Colors.white,
+                                    fontFamily: 'ComicSansMS',
+                                    fontStyle: FontStyle.italic,
+                                    fontSize:
+                                        MediaQuery.of(context).size.height <
+                                                    660 ||
+                                                MediaQuery.of(context)
+                                                        .size
+                                                        .width <
+                                                    660
+                                            ? 14
+                                            : 16)),
+                          ),
+                          Container(
+                            decoration: const BoxDecoration(),
+                            clipBehavior: Clip.hardEdge,
+                            child: OutlinedButton(
+                              clipBehavior: Clip.hardEdge,
                                 style: ButtonStyle(
+                                  minimumSize: MaterialStateProperty.all(
+                                      Size.zero),
                                   padding: MaterialStateProperty.all(
                                       const EdgeInsets.symmetric(
                                           vertical: 15, horizontal: 12)),
@@ -394,7 +402,9 @@ class _CardsDisplayState extends State<CardsDisplay>
                                 },
                                 child: Text(
                                   "Поехали",
+                                  overflow: TextOverflow.clip,
                                   style: TextStyle(
+                                    overflow: TextOverflow.clip,
                                     color: Colors.white,
                                     fontSize: MediaQuery.of(context).size.width <= 660 || MediaQuery.of(context).size.height <= 660 ? 12 : 14,
                                     fontStyle: FontStyle.italic,
@@ -402,12 +412,11 @@ class _CardsDisplayState extends State<CardsDisplay>
                                     fontFamily: "ComicSansMS",
                                     letterSpacing: 1.5,
                                   ),
-                                ))
-                          ],
-                        ),
-                      )
-                    : Container(),
-              ),
+                                )),
+                          )
+                        ],
+                      ),
+                    ),
               Flexible(
                 flex: 1,
                 child: Stack(clipBehavior: Clip.none, children: [
