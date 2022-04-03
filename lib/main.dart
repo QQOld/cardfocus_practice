@@ -86,7 +86,7 @@ class _CardsDisplayState extends State<CardsDisplay>
     super.initState();
 
     startAnimController = AnimationController(
-        duration: const Duration(milliseconds: 1100), vsync: this);
+        duration: const Duration(milliseconds: 1000), vsync: this);
     startAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(parent: startAnimController, curve: Curves.easeInQuad))
       ..addListener(() {
@@ -137,6 +137,23 @@ class _CardsDisplayState extends State<CardsDisplay>
     return calcCardSize(context) * (346 / 248);
   }
 
+  void updateCursorCoord(PointerEvent details) {
+    double position = (MediaQuery.of(context).size.width)/details.position.dx;
+    setState(() {
+      if(!animation.isCompleted || details.position.dy > 6/12 * (MediaQuery.of(context).size.height) + calcCardHeight(context) + 40){
+        onWhichColumnPointerIs = 0;
+      } else if(position >= 8/3) {
+        onWhichColumnPointerIs = 1;
+      } else if(position >= 8/5) {
+        onWhichColumnPointerIs = 2;
+      } else if(position >= 1) {
+        onWhichColumnPointerIs = 3;
+      } else {
+        onWhichColumnPointerIs = 0;
+      }
+    });
+  }
+
   double calcPointerPosition(BuildContext context, int column) {
     return (MediaQuery.of(context).size.width / 4) * onWhichColumnPointerIs -
         calcCardSize(context) / 2;
@@ -168,7 +185,7 @@ class _CardsDisplayState extends State<CardsDisplay>
   Widget build(BuildContext context) {
     if (_choiceCount == 3) {
       return Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(5),
         child: TweenAnimationBuilder(
             tween: Tween<double>(begin: 0.0, end: 1.0),
             duration: const Duration(milliseconds: 3000),
@@ -216,7 +233,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                 // key: Key("Button$isVisible"),
                 duration: const Duration(milliseconds: 1000),
                 clipBehavior: Clip.hardEdge,
-                constraints: const BoxConstraints(minHeight: 0, maxHeight: 200),
+                constraints: const BoxConstraints(minHeight: 0, maxHeight: 320),
                 width: MediaQuery.of(context).size.width <= 660 ||
                         MediaQuery.of(context).size.height <= 660
                     ? MediaQuery.of(context).size.width * 0.9
@@ -289,7 +306,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                           onPressed: () {
                             setState(() {
                               isVisible = false;
-                              Future.delayed(const Duration(milliseconds: 1100),
+                              Future.delayed(const Duration(milliseconds: 1000),
                                   () {
                                 startAnimController.forward();
                               });
@@ -323,7 +340,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                   ...List.generate(
                       11,
                       (index) => AnimatedPositioned(
-                            duration: const Duration(milliseconds: 900),
+                            duration: const Duration(milliseconds: 800),
                             width: calcCardSize(context),
                             top: 0,
                             left: startAnimation.value *
@@ -335,7 +352,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                   ...List.generate(
                       11,
                       (index) => AnimatedPositioned(
-                          duration: const Duration(milliseconds: 900),
+                          duration: const Duration(milliseconds: 800),
                           width: calcCardSize(context),
                           top: isVisible
                               ? 0
@@ -377,7 +394,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                 fontFamily: "ComicSansMS",
                 letterSpacing: isVisible ? 1 : 2.5,
               ),
-              duration: const Duration(milliseconds: 2000),
+              duration: const Duration(milliseconds: 2800),
               child: const Text(
                 "Сыграем",
               ),
@@ -420,126 +437,163 @@ class _CardsDisplayState extends State<CardsDisplay>
       return Scaffold(
         backgroundColor: Colors.transparent,
         body: SizedBox(
+          width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          // Стек всего экрана
-          child: Stack(
-              clipBehavior: Clip.none,
-              textDirection: TextDirection.ltr,
-              children: [
-                Container(),
-                Positioned(
-                    top: MediaQuery.of(context).size.height * (6/12) + calcCardHeight(context) + calcCardHeight(context)/10,
-                    left: 0,
-                    right: 0,
-                    child: Center(
-                      child: AnimatedOpacity(
-                        duration: const Duration(milliseconds: 1200),
-                        opacity: isShuffling ? 0 : 1,
-                        child: Text(
-                  "Выбери колонку",
-                  style: TextStyle(
-                        color: isVisible
-                            ? Colors.white.withOpacity(0.2)
-                            : Colors.white,
-                        fontSize: MediaQuery.of(context).size.height <
-                            500 ||
-                            MediaQuery.of(context).size.width < 500 ? 14 : 20,
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: "ComicSansMS",
-                        letterSpacing: 1.5,
-                  ),
-                ),
-                      ),
-                    )),
-                ...List.generate(
-                  3,
-                  (num) => AnimatedPositioned(
-                    duration: const Duration(milliseconds: 1500),
-                    curve: Curves.easeOutSine,
-                    top: 0,
-                    bottom: 0,
-                    left: isShuffling
-                        ? MediaQuery.of(context).size.width / 2 -
-                            calcCardSize(context) / 2
-                        : MediaQuery.of(context).size.width / 4 * (num + 1) -
-                            calcCardSize(context) / 2,
-                    width: calcCardSize(context),
-                    // Стек всей колонкиа
-                    child: Stack(clipBehavior: Clip.none, children: [
-                      Container(),
-                      // Стек колонки карт
-                      Stack(clipBehavior: Clip.none, children: [
-                        Container(),
-                        Positioned(
-                            top: 0,
-                            bottom: MediaQuery.of(context).size.height -
-                                MediaQuery.of(context).size.height * 6 / 12 -
-                                calcCardHeight(context) -
-                                40,
-                            left: 0,
-                            right: 0,
-                            child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    boxShadow: num + 1 == onWhichColumnPointerIs
-                                        ? const [
-                                            BoxShadow(
-                                                color: Colors.black,
-                                                blurRadius: 10,
-                                                blurStyle: BlurStyle.outer)
-                                          ]
-                                        : null))),
-                        ...List.generate(
-                            7,
-                            (index) => Positioned(
-                                  width: calcCardSize(context),
-                                  top: index *
-                                      animation.value *
-                                      MediaQuery.of(context).size.height *
-                                      1 /
-                                      12,
-                                  // индекс (0..2) + 1 = номер колонки, умножение на 3 для правильного разложения карт(в каждый столбец по порядку, т.е. 1 столбец - 1, 4, 7...)
-                                  child: MouseRegion(
-                                    onEnter: animation.isCompleted
-                                        ? (enter) => setState(() =>
-                                            onWhichColumnPointerIs = num + 1)
-                                        : null,
-                                    onExit: (exit) => setState(
-                                        () => onWhichColumnPointerIs = 0),
-                                    child: GestureDetector(
+          child: MouseRegion(
+            cursor: onWhichColumnPointerIs == 0 ? SystemMouseCursors.basic   : SystemMouseCursors.click,
+            onHover: updateCursorCoord,
+            onExit: (exit) => setState(
+                    () => onWhichColumnPointerIs = 0),
+            child: GestureDetector(
+              onTap: () {
+                _chooseColumn(onWhichColumnPointerIs);
+                onWhichColumnPointerIs = 0;
+              },
+              // Стек всего экрана
+              child: Stack(
+                  clipBehavior: Clip.none,
+                  textDirection: TextDirection.ltr,
+                  children: [
+                    Container(),
+                    Positioned(
+                        top: MediaQuery.of(context).size.height * (6 / 12) +
+                            calcCardHeight(context) +
+                            calcCardHeight(context) / 10,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: AnimatedOpacity(
+                            duration: const Duration(milliseconds: 1200),
+                            opacity: isShuffling ? 0 : 1,
+                            child: Text(
+                              "Выбери колонку",
+                              style: TextStyle(
+                                color: isVisible
+                                    ? Colors.white.withOpacity(0.2)
+                                    : Colors.white,
+                                fontSize:
+                                    MediaQuery.of(context).size.height < 500 ||
+                                            MediaQuery.of(context).size.width < 500
+                                        ? 14
+                                        : 20,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: "ComicSansMS",
+                                letterSpacing: 1.5,
+                              ),
+                            ),
+                          ),
+                        )),
+                    ...List.generate(
+                      3,
+                      (num) => AnimatedPositioned(
+                        duration: const Duration(milliseconds: 1500),
+                        curve: Curves.easeOutSine,
+                        top: 0,
+                        bottom: MediaQuery.of(context).size.height -
+                            MediaQuery.of(context).size.height * 6 / 12 -
+                            calcCardHeight(context) -
+                            40,
+                        left: isShuffling
+                            ? MediaQuery.of(context).size.width / 2 -
+                                calcCardSize(context) / 2
+                            : MediaQuery.of(context).size.width / 4 * (num + 1) -
+                                calcCardSize(context) / 2,
+                        width: calcCardSize(context),
+                        // Стек всей колонки
+                        child: /*Stack(clipBehavior: Clip.none, children: [
+                          Container(),*/
+                            // Стек колонки карт
+                            Container(
+                              decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              boxShadow: num + 1 == onWhichColumnPointerIs
+                                  ? const [
+                                      BoxShadow(
+                                          color: Colors.black,
+                                          blurRadius: 17,
+                                          blurStyle: BlurStyle.outer)
+                                    ]
+                                  : null),
+                          child: Stack(clipBehavior: Clip.none, children: [
+                            Container(),
+                            /* Positioned(
+                                top: 0,
+                                bottom: MediaQuery.of(context).size.height -
+                                    MediaQuery.of(context).size.height * 6 / 12 -
+                                    calcCardHeight(context) -
+                                    40,
+                                left: 0,
+                                right: 0,
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        boxShadow: num + 1 == onWhichColumnPointerIs
+                                            ? const [
+                                                BoxShadow(
+                                                    color: Colors.black,
+                                                    blurRadius: 17,
+                                                    blurStyle: BlurStyle.outer)
+                                              ]
+                                            : null))),*/
+                            ...List.generate(
+                                7,
+                                (index) => Positioned(
+                                      width: calcCardSize(context),
+                                      top: index *
+                                          animation.value *
+                                          MediaQuery.of(context).size.height *
+                                          1 /
+                                          12,
+                                      // индекс (0..2) + 1 = номер колонки, умножение на 3 для правильного разложения карт(в каждый столбец по порядку, т.е. 1 столбец - 1, 4, 7...)
                                       child: images[num + 1 + index * 3],
-                                      onTap: () {
-                                        onWhichColumnPointerIs = 0;
-                                        _chooseColumn(num + 1);
-                                      },
-                                    ),
-                                  ),
-                                )),
-                      ]),
-                      Positioned(
-                          width: calcCardSize(context),
-                          top: -shirtAnimation.value * 205,
-                          child: images[0]),
-                    ]),
-                  ),
-                ),
-                //Палец
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 500),
-                  width: calcCardSize(context) - 30,
-                  bottom: onWhichColumnPointerIs == 0
-                      ? -180
-                      : MediaQuery.of(context).size.height / 13,
-                  left: onWhichColumnPointerIs == 0
-                      ? MediaQuery.of(context).size.width / 2 - 40
-                      : calcPointerPosition(context, onWhichColumnPointerIs),
-                  child: const Image(
-                    image: AssetImage("assets/finger.png"),
-                    repeat: ImageRepeat.noRepeat,
-                  ),
-                ),
-              ]),
+                                  /*MouseRegion(
+                                        onEnter: animation.isCompleted
+                                            ? (enter) => setState(() =>
+                                                onWhichColumnPointerIs = num + 1)
+                                            : null,
+                                        onExit: (exit) => setState(
+                                            () => onWhichColumnPointerIs = 0),
+                                        child: GestureDetector(
+                                          child: images[num + 1 + index * 3],
+                                          onTap: () {
+                                            onWhichColumnPointerIs = 0;
+                                            _chooseColumn(num + 1);
+                                          },
+                                        ),
+                                      ),*/
+                                    )),
+                            Positioned(
+                                width: calcCardSize(context),
+                                top: -shirtAnimation.value * 205,
+                                child: images[0]),
+                          ]),
+                        ),
+                        /*Positioned(
+                              width: calcCardSize(context),
+                              top: -shirtAnimation.value * 205,
+                              child: images[0]),*/
+                        /*]),*/
+                      ),
+                    ),
+                    //Палец
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 500),
+                      width: calcCardSize(context) - 30,
+                      bottom: onWhichColumnPointerIs == 0
+                          ? -180
+                          : MediaQuery.of(context).size.height / 13,
+                      left: onWhichColumnPointerIs == 0
+                          ? MediaQuery.of(context).size.width / 2 - 40
+                          : calcPointerPosition(context, onWhichColumnPointerIs),
+                      child: const Image(
+                        image: AssetImage("assets/finger.png"),
+                        repeat: ImageRepeat.noRepeat,
+                      ),
+                    ),
+                  ]),
+            ),
+          ),
         ),
       );
     }
