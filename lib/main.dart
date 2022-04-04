@@ -546,71 +546,79 @@ class _CardsDisplayState extends State<CardsDisplay>
                         child: /*Stack(clipBehavior: Clip.none, children: [
                           Container(),*/
                             // Стек колонки карт
-                            Container(
-                              decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              boxShadow: num + 1 == onWhichColumnPointerIs
-                                  ? const [
-                                      BoxShadow(
-                                          color: Colors.black,
-                                          blurRadius: 17,
-                                          blurStyle: BlurStyle.outer)
-                                    ]
-                                  : null),
+                            GestureDetector(
+                              onTap:  onWhichColumnPointerIs == 0
+                                  ? null
+                                  : () {
+                                _chooseColumn(onWhichColumnPointerIs);
+                                onWhichColumnPointerIs = 0;
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                boxShadow: num + 1 == onWhichColumnPointerIs
+                                    ? const [
+                                        BoxShadow(
+                                            color: Colors.black,
+                                            blurRadius: 17,
+                                            blurStyle: BlurStyle.outer)
+                                      ]
+                                    : null),
                           child: Stack(clipBehavior: Clip.none, children: [
-                            Container(),
-                            /* Positioned(
-                                top: 0,
-                                bottom: MediaQuery.of(context).size.height -
-                                    MediaQuery.of(context).size.height * 6 / 12 -
-                                    calcCardHeight(context) -
-                                    40,
-                                left: 0,
-                                right: 0,
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        boxShadow: num + 1 == onWhichColumnPointerIs
-                                            ? const [
-                                                BoxShadow(
-                                                    color: Colors.black,
-                                                    blurRadius: 17,
-                                                    blurStyle: BlurStyle.outer)
-                                              ]
-                                            : null))),*/
-                            ...List.generate(
-                                7,
-                                (index) => Positioned(
-                                      width: calcCardSize(context),
-                                      top: index *
-                                          animation.value *
-                                          MediaQuery.of(context).size.height *
-                                          1 /
-                                          12,
-                                      // индекс (0..2) + 1 = номер колонки, умножение на 3 для правильного разложения карт(в каждый столбец по порядку, т.е. 1 столбец - 1, 4, 7...)
-                                      child: images[num + 1 + index * 3],
-                                  /*MouseRegion(
-                                        onEnter: animation.isCompleted
-                                            ? (enter) => setState(() =>
-                                                onWhichColumnPointerIs = num + 1)
-                                            : null,
-                                        onExit: (exit) => setState(
-                                            () => onWhichColumnPointerIs = 0),
-                                        child: GestureDetector(
-                                          child: images[num + 1 + index * 3],
-                                          onTap: () {
-                                            onWhichColumnPointerIs = 0;
-                                            _chooseColumn(num + 1);
-                                          },
-                                        ),
-                                      ),*/
-                                    )),
-                            Positioned(
-                                width: calcCardSize(context),
-                                top: -shirtAnimation.value * 205,
-                                child: images[0]),
+                              Container(),
+                              /* Positioned(
+                                  top: 0,
+                                  bottom: MediaQuery.of(context).size.height -
+                                      MediaQuery.of(context).size.height * 6 / 12 -
+                                      calcCardHeight(context) -
+                                      40,
+                                  left: 0,
+                                  right: 0,
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(8),
+                                          boxShadow: num + 1 == onWhichColumnPointerIs
+                                              ? const [
+                                                  BoxShadow(
+                                                      color: Colors.black,
+                                                      blurRadius: 17,
+                                                      blurStyle: BlurStyle.outer)
+                                                ]
+                                              : null))),*/
+                              ...List.generate(
+                                  7,
+                                  (index) => Positioned(
+                                        width: calcCardSize(context),
+                                        top: index *
+                                            animation.value *
+                                            MediaQuery.of(context).size.height *
+                                            1 /
+                                            12,
+                                        // индекс (0..2) + 1 = номер колонки, умножение на 3 для правильного разложения карт(в каждый столбец по порядку, т.е. 1 столбец - 1, 4, 7...)
+                                        child: images[num + 1 + index * 3],
+                                    /*MouseRegion(
+                                          onEnter: animation.isCompleted
+                                              ? (enter) => setState(() =>
+                                                  onWhichColumnPointerIs = num + 1)
+                                              : null,
+                                          onExit: (exit) => setState(
+                                              () => onWhichColumnPointerIs = 0),
+                                          child: GestureDetector(
+                                            child: images[num + 1 + index * 3],
+                                            onTap: () {
+                                              onWhichColumnPointerIs = 0;
+                                              _chooseColumn(num + 1);
+                                            },
+                                          ),
+                                        ),*/
+                                      )),
+                              Positioned(
+                                  width: calcCardSize(context),
+                                  top: -shirtAnimation.value * 205,
+                                  child: images[0]),
                           ]),
                         ),
+                            ),
                         /*Positioned(
                               width: calcCardSize(context),
                               top: -shirtAnimation.value * 205,
