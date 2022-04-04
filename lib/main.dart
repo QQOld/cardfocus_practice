@@ -189,9 +189,9 @@ class _CardsDisplayState extends State<CardsDisplay>
         child: TweenAnimationBuilder(
             tween: Tween<double>(begin: 0.0, end: 1.0),
             duration: const Duration(milliseconds: 3000),
-            builder: (_, double opacity, __) {
+            builder: (_, double move, __) {
               return Opacity(
-                opacity: opacity,
+                opacity: move,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
@@ -206,15 +206,15 @@ class _CardsDisplayState extends State<CardsDisplay>
                         style: TextStyle(
                           fontFamily: "ComicSansMS",
                           fontSize: MediaQuery.of(context).size.height <= 500
-                              ? 18 * opacity
-                              : 26 * opacity,
+                              ? 18 * move
+                              : 26 * move,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
                     ),
                     SizedBox(
-                      width: (calcCardSize(context) + 60) * opacity,
+                      width: (calcCardSize(context) + 50) * move,
                       child: images[11],
                     )
                   ],
@@ -345,7 +345,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                             top: 0,
                             left: startAnimation.value *
                                 index *
-                                (MediaQuery.of(context).size.width - 130) *
+                                (MediaQuery.of(context).size.width - calcCardSize(context)) *
                                 (1 / 11),
                             child: images[index + 11],
                           )),
@@ -363,7 +363,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                                       160,
                           left: startAnimation.value *
                               index *
-                              (MediaQuery.of(context).size.width - 130) *
+                              (MediaQuery.of(context).size.width - calcCardSize(context)) *
                               (1 / 11),
                           child: images[10 - index]))
                 ]),
@@ -439,17 +439,18 @@ class _CardsDisplayState extends State<CardsDisplay>
         body: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          child: MouseRegion(
-            cursor: onWhichColumnPointerIs == 0 ? SystemMouseCursors.basic   : SystemMouseCursors.click,
-            onHover: updateCursorCoord,
-            onExit: (exit) => setState(
-                    () => onWhichColumnPointerIs = 0),
-            child: GestureDetector(
-              onTap: () {
+          child: GestureDetector(
+            onTap: onWhichColumnPointerIs == 0
+              ? null
+              : () {
                 _chooseColumn(onWhichColumnPointerIs);
                 onWhichColumnPointerIs = 0;
-              },
-              // Стек всего экрана
+            },
+            child: MouseRegion(
+              cursor: onWhichColumnPointerIs == 0 ? SystemMouseCursors.basic : SystemMouseCursors.click,
+              onHover: updateCursorCoord,
+              onExit: (exit) => setState(
+                      () => onWhichColumnPointerIs = 0),
               child: Stack(
                   clipBehavior: Clip.none,
                   textDirection: TextDirection.ltr,
