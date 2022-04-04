@@ -72,9 +72,10 @@ class _CardsDisplayState extends State<CardsDisplay>
   late Animation<double> secondMainAnimation;
 
   bool mainAnimIsCompleted = false;
-  bool isCardChosen = true;
+  bool isCardChoosing= true;
   bool isShuffling = false;
   bool isVisible = true;
+  bool isRepeat = false;
 
   int columnChoice = 0;
   int _choiceCount = 0;
@@ -95,6 +96,11 @@ class _CardsDisplayState extends State<CardsDisplay>
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           setState(() {});
+        }
+        if (status == AnimationStatus.dismissed && isRepeat) {
+          setState(() {
+            startAnimController.forward();
+          });
         }
       });
 
@@ -161,7 +167,7 @@ class _CardsDisplayState extends State<CardsDisplay>
 
   void _changeToVertical() {
     setState(() {
-      isCardChosen = false;
+      isCardChoosing = false;
     });
     controller.forward();
   }
@@ -213,16 +219,51 @@ class _CardsDisplayState extends State<CardsDisplay>
                         ),
                       ),
                     ),
-                    SizedBox(
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 7),
                       width: (calcCardSize(context) + 50) * move,
                       child: images[11],
-                    )
+                    ),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(10),
+                      hoverColor: Colors.white30.withOpacity(0.1),
+                      onTap: move == 1.0
+                          ? () => setState(() {
+                            isCardChoosing = true;
+                            columnChoice = 0;
+                            _choiceCount = 0;
+                            isRepeat = true;
+                          })
+                          : null,
+                      child: Container(
+                        padding: EdgeInsets.all(6 * move),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Colors.white,
+                              width: 2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: DefaultTextStyle(
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12 * move,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "ComicSansMS",
+                            letterSpacing: 1.4 * move,
+                          ),
+                          child: const Text(
+                            "Сыграем ещё",
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               );
             }),
       );
-    } else if (isCardChosen) {
+    } else if (isCardChoosing) {
       return Scaffold(
         backgroundColor: Colors.transparent,
         body: Padding(
