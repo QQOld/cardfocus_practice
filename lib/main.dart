@@ -305,13 +305,16 @@ class _CardsDisplayState extends State<CardsDisplay>
                       flex: 3,
                       child: Container(
                         clipBehavior: Clip.hardEdge,
-                        decoration: const BoxDecoration(),
+                        decoration: const BoxDecoration(
+                          color: Colors.transparent
+                        ),
                         margin: const EdgeInsets.only(bottom: 20),
                         child: Text(
                             "Привет, я бы хотел продемонстрировать тебе свои телепатические силы. Не веришь? Я докажу тебе это, если ты сыграешь со мной в мини игру."
                             "Тебе лишь надо загадать одну карту иp тех, что ты увидишь на экране. Потом 3 раза выбери колонку, в которой находится твоя карта. Всё просто.",
                             overflow: TextOverflow.clip,
                             style: TextStyle(
+                                backgroundColor: Colors.transparent,
                                 overflow: TextOverflow.clip,
                                 color: Colors.white,
                                 fontFamily: 'ComicSansMS',
@@ -338,7 +341,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                                 if (states.contains(MaterialState.hovered)) {
                                   return Colors.white.withOpacity(0.1);
                                 }
-                                return null;
+                                return Colors.transparent;
                               },
                             ),
                             side: MaterialStateProperty.all<BorderSide>(
