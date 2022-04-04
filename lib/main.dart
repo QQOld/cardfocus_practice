@@ -287,6 +287,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                         : 20),
                 margin: const EdgeInsets.only(bottom: 25),
                 decoration: BoxDecoration(
+                  color: Colors.transparent,
                   border: Border.all(color: Colors.white, width: 2),
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: const [
@@ -442,36 +443,6 @@ class _CardsDisplayState extends State<CardsDisplay>
             ),
           ),
         ),
-        /*OutlinedButton(
-            style: ButtonStyle(
-              animationDuration: Duration(seconds: 2),
-              padding: MaterialStateProperty.all(
-                  EdgeInsets.all(isVisible ? 15 : 20)),
-              backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                (Set<MaterialState> states) {
-                  if (states.contains(MaterialState.hovered) &&
-                      startAnimation.isCompleted) {
-                    return Colors.white.withOpacity(0.1);
-                  }
-                  return Colors.transparent;
-                },
-              ),
-              side: MaterialStateProperty.all<BorderSide>(
-                BorderSide(width: 3.0, color: isVisible ? Colors.white.withOpacity(0.2) : Colors.white),
-              ),
-            ),
-            onPressed: startAnimation.isCompleted ? _changeToVertical : null,
-            child: Text(
-              "Сыграем",
-              style: TextStyle(
-                color: isVisible ? Colors.white.withOpacity(0.2) : Colors.white,
-                fontSize: isVisible ? 14 : 20,
-                fontStyle: FontStyle.italic,
-                fontWeight: FontWeight.w600,
-                fontFamily: "ComicSansMS",
-                letterSpacing: 1.5,
-              ),
-            )),*/
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       );
     } else {
@@ -547,11 +518,8 @@ class _CardsDisplayState extends State<CardsDisplay>
                           Container(),*/
                             // Стек колонки карт
                             GestureDetector(
-                              onTap:  onWhichColumnPointerIs == 0
-                                  ? null
-                                  : () {
-                                _chooseColumn(onWhichColumnPointerIs);
-                                onWhichColumnPointerIs = 0;
+                              onTap:  () {
+                                _chooseColumn(num + 1);
                               },
                               child: Container(
                                 decoration: BoxDecoration(
