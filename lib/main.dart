@@ -1,14 +1,13 @@
-// 1 4 7 10 13 16 19
-// 2 5 8 11 14 17 20
-// 3 6 9 12 15 18 21
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+const String version = "1.0";
+
 List<Image> images =
-    List.generate(22, (index) => Image.asset("assets/img/${index + 1}.png"));
+List.generate(22, (index) => Image.asset("assets/img/${index + 1}.png"));
 
 class ShuffleCalc {
   static List<Image> createHelpList() {
@@ -132,10 +131,10 @@ class _CardsDisplayState extends State<CardsDisplay>
 
   double calcCardSize(BuildContext context) {
     return MediaQuery.of(context).size.height < 661 ||
-            MediaQuery.of(context).size.width < 661
+        MediaQuery.of(context).size.width < 661
         ? min(MediaQuery.of(context).size.width,
-                MediaQuery.of(context).size.height) /
-            5
+        MediaQuery.of(context).size.height) /
+        5
         : 130;
   }
 
@@ -229,11 +228,11 @@ class _CardsDisplayState extends State<CardsDisplay>
                       hoverColor: Colors.white30.withOpacity(0.1),
                       onTap: move == 1.0
                           ? () => setState(() {
-                            isCardChoosing = true;
-                            columnChoice = 0;
-                            _choiceCount = 0;
-                            isRepeat = true;
-                          })
+                        isCardChoosing = true;
+                        columnChoice = 0;
+                        _choiceCount = 0;
+                        isRepeat = true;
+                      })
                           : null,
                       child: Container(
                         padding: EdgeInsets.all(6 * move),
@@ -266,37 +265,6 @@ class _CardsDisplayState extends State<CardsDisplay>
     } else if (isCardChoosing) {
       return Scaffold(
         backgroundColor: Colors.transparent,
-        body: TweenAnimationBuilder(
-          tween: Tween<double>(begin: 0.0, end: 1.0),
-          duration: const Duration(milliseconds: 2500),
-          curve: Curves.easeInCubic,
-          builder: (_, double move, __) {
-            return Stack(
-                clipBehavior: Clip.none,
-                children: [
-              ...List.generate(
-                  11,
-                  (index) => Positioned(
-                        width: 130,
-                        top: 0,
-                        left: move *
-                            index *
-                            (MediaQuery.of(context).size.width - 130 ) *
-                            (1/11),
-                        child: images[index],
-                      )),
-              ...List.generate(
-                  11,
-                  (index) => Positioned(
-                        width: 130,
-                        top: 180,
-                        left: move *
-                            index *
-                            (MediaQuery.of(context).size.width - 130 ) *
-                            (1/11),
-                        child: images[index + 11]))
-            ]
-
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
@@ -307,13 +275,13 @@ class _CardsDisplayState extends State<CardsDisplay>
                 clipBehavior: Clip.hardEdge,
                 constraints: const BoxConstraints(minHeight: 0, maxHeight: 320),
                 width: MediaQuery.of(context).size.width <= 660 ||
-                        MediaQuery.of(context).size.height <= 660
+                    MediaQuery.of(context).size.height <= 660
                     ? MediaQuery.of(context).size.width * 0.9
                     : MediaQuery.of(context).size.width * 0.7,
                 height: isVisible ? null : 0,
                 padding: EdgeInsets.all(
                     MediaQuery.of(context).size.width <= 660 ||
-                            MediaQuery.of(context).size.height <= 660
+                        MediaQuery.of(context).size.height <= 660
                         ? 8
                         : 20),
                 margin: const EdgeInsets.only(bottom: 25),
@@ -337,7 +305,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                       child: Container(
                         clipBehavior: Clip.hardEdge,
                         decoration: const BoxDecoration(
-                          color: Colors.transparent
+                            color: Colors.transparent
                         ),
                         margin: const EdgeInsets.only(bottom: 20),
                         child: Text(
@@ -351,8 +319,8 @@ class _CardsDisplayState extends State<CardsDisplay>
                                 fontFamily: 'ComicSansMS',
                                 fontStyle: FontStyle.italic,
                                 fontSize: MediaQuery.of(context).size.height <
-                                            660 ||
-                                        MediaQuery.of(context).size.width < 660
+                                    660 ||
+                                    MediaQuery.of(context).size.width < 660
                                     ? 14
                                     : 16)),
                       ),
@@ -367,8 +335,8 @@ class _CardsDisplayState extends State<CardsDisplay>
                                 const EdgeInsets.symmetric(
                                     vertical: 15, horizontal: 12)),
                             backgroundColor:
-                                MaterialStateProperty.resolveWith<Color?>(
-                              (Set<MaterialState> states) {
+                            MaterialStateProperty.resolveWith<Color?>(
+                                  (Set<MaterialState> states) {
                                 if (states.contains(MaterialState.hovered)) {
                                   return Colors.white.withOpacity(0.1);
                                 }
@@ -383,9 +351,9 @@ class _CardsDisplayState extends State<CardsDisplay>
                             setState(() {
                               isVisible = false;
                               Future.delayed(const Duration(milliseconds: 1000),
-                                  () {
-                                startAnimController.forward();
-                              });
+                                      () {
+                                    startAnimController.forward();
+                                  });
                             });
                           },
                           child: Text(
@@ -395,8 +363,8 @@ class _CardsDisplayState extends State<CardsDisplay>
                               overflow: TextOverflow.clip,
                               color: Colors.white,
                               fontSize: MediaQuery.of(context).size.width <=
-                                          660 ||
-                                      MediaQuery.of(context).size.height <= 660
+                                  660 ||
+                                  MediaQuery.of(context).size.height <= 660
                                   ? 12
                                   : 14,
                               fontStyle: FontStyle.italic,
@@ -415,28 +383,28 @@ class _CardsDisplayState extends State<CardsDisplay>
                   Container(),
                   ...List.generate(
                       11,
-                      (index) => AnimatedPositioned(
-                            duration: const Duration(milliseconds: 800),
-                            width: calcCardSize(context),
-                            top: 0,
-                            left: startAnimation.value *
-                                index *
-                                (MediaQuery.of(context).size.width - calcCardSize(context)) *
-                                (1 / 11),
-                            child: images[index + 11],
-                          )),
+                          (index) => AnimatedPositioned(
+                        duration: const Duration(milliseconds: 800),
+                        width: calcCardSize(context),
+                        top: 0,
+                        left: startAnimation.value *
+                            index *
+                            (MediaQuery.of(context).size.width - calcCardSize(context)) *
+                            (1 / 11),
+                        child: images[index + 11],
+                      )),
                   ...List.generate(
                       11,
-                      (index) => AnimatedPositioned(
+                          (index) => AnimatedPositioned(
                           duration: const Duration(milliseconds: 800),
                           width: calcCardSize(context),
                           top: isVisible
                               ? 0
                               : MediaQuery.of(context).size.height > 500
-                                  ? 180
-                                  : MediaQuery.of(context).size.height -
-                                      calcCardHeight(context) -
-                                      160,
+                              ? 180
+                              : MediaQuery.of(context).size.height -
+                              calcCardHeight(context) -
+                              160,
                           left: startAnimation.value *
                               index *
                               (MediaQuery.of(context).size.width - calcCardSize(context)) *
@@ -456,7 +424,7 @@ class _CardsDisplayState extends State<CardsDisplay>
             decoration: BoxDecoration(
               border: Border.all(
                   color:
-                      isVisible ? Colors.white.withOpacity(0.2) : Colors.white,
+                  isVisible ? Colors.white.withOpacity(0.2) : Colors.white,
                   width: 3),
               borderRadius: BorderRadius.circular(10),
             ),
@@ -480,117 +448,6 @@ class _CardsDisplayState extends State<CardsDisplay>
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       );
     } else {
-      return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          textDirection: TextDirection.ltr,
-          children: List.generate(
-            3,
-            (num) => SizedBox(
-              width: 130,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                        children: [
-                      ...List.generate(
-                          7,
-                          (index) => Positioned(
-                                width: 130,
-                                top: index *
-                                    animation.value *
-                                    MediaQuery.of(context).size.height *
-                                    1/12,
-                                // индекс (0..2) + 1 = номер колонки, умножение на 3 для правильного разложения карт(в каждый столбец по порядку, т.е. 1 столбец - 1, 4, 7...)
-                                child: images[num + 1 + index * 3],
-                              )),
-                      Positioned(
-                          width: 130,
-                          top: -shirtAnimation.value * 205,
-                          child: images[0])
-                    ]),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: ElevatedButton(
-                        onPressed: animation.isCompleted ? () => _chooseColumn(num + 1) : null,
-                        child: const Text("Выбрать")),
-                  )
-                ],
-              ),
-            ),
-          )
-          /*[
-          SizedBox(
-            width: 130,
-            child: Column(
-              children: [
-                Expanded(
-                  child: Stack(
-                    children: List.generate(
-                        7,
-                        (index) => Positioned(
-                              width: 130,
-                              top: index * animation.value * MediaQuery.of(context).size.height/7 * 0.01,
-                              child: images[1 + index * 3],
-                            )),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: ElevatedButton(
-                      onPressed: () => _chooseColumn(1),
-                      child: const Text("Выбрать")),
-                )
-              ],
-            ),
-          ),
-          SizedBox(
-            width: 130,
-            child: Column(
-              children: [
-                Expanded(
-                  child: Stack(
-                    children: List.generate(
-                        7,
-                        (index) => Positioned(
-                              width: 130,
-                              top: index * animation.value * MediaQuery.of(context).size.height/7 * 0.01,
-                              child: images[2 + index * 3],
-                            )),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: ElevatedButton(
-                      onPressed: () => _chooseColumn(2),
-                      child: const Text("Выбрать")),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            width: 130,
-            child: Column(
-              children: [
-                Expanded(
-                  child: Stack(
-                    children: List.generate(
-                        7,
-                        (index) => Positioned(
-                              width: 130,
-                              top: index * animation.value * MediaQuery.of(context).size.height/7 * 0.01,
-                              child: images[3 + index * 3],
-                            )),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: ElevatedButton(
-                      onPressed: () => _chooseColumn(3),
-                      child: const Text("Выбрать")),
-                ),
-              ],
       return Scaffold(
         backgroundColor: Colors.transparent,
         body: SizedBox(
@@ -598,10 +455,10 @@ class _CardsDisplayState extends State<CardsDisplay>
           height: MediaQuery.of(context).size.height,
           child: GestureDetector(
             onTap: onWhichColumnPointerIs == 0
-              ? null
-              : () {
-                _chooseColumn(onWhichColumnPointerIs);
-                onWhichColumnPointerIs = 0;
+                ? null
+                : () {
+              _chooseColumn(onWhichColumnPointerIs);
+              onWhichColumnPointerIs = 0;
             },
             child: MouseRegion(
               cursor: onWhichColumnPointerIs == 0 ? SystemMouseCursors.basic : SystemMouseCursors.click,
@@ -630,10 +487,10 @@ class _CardsDisplayState extends State<CardsDisplay>
                                     ? Colors.white.withOpacity(0.2)
                                     : Colors.white,
                                 fontSize:
-                                    MediaQuery.of(context).size.height < 500 ||
-                                            MediaQuery.of(context).size.width < 500
-                                        ? 14
-                                        : 20,
+                                MediaQuery.of(context).size.height < 500 ||
+                                    MediaQuery.of(context).size.width < 500
+                                    ? 14
+                                    : 20,
                                 fontStyle: FontStyle.italic,
                                 fontWeight: FontWeight.w600,
                                 fontFamily: "ComicSansMS",
@@ -644,7 +501,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                         )),
                     ...List.generate(
                       3,
-                      (num) => AnimatedPositioned(
+                          (num) => AnimatedPositioned(
                         duration: const Duration(milliseconds: 1500),
                         curve: Curves.easeOutSine,
                         top: 0,
@@ -654,61 +511,42 @@ class _CardsDisplayState extends State<CardsDisplay>
                             40,
                         left: isShuffling
                             ? MediaQuery.of(context).size.width / 2 -
-                                calcCardSize(context) / 2
+                            calcCardSize(context) / 2
                             : MediaQuery.of(context).size.width / 4 * (num + 1) -
-                                calcCardSize(context) / 2,
+                            calcCardSize(context) / 2,
                         width: calcCardSize(context),
                         // Стек всей колонки
                         child: /*Stack(clipBehavior: Clip.none, children: [
                           Container(),*/
-                            // Стек колонки карт
-                            GestureDetector(
-                              onTap:  () {
-                                _chooseColumn(num + 1);
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
+                        // Стек колонки карт
+                        GestureDetector(
+                          onTap:  () {
+                            _chooseColumn(num + 1);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
                                 boxShadow: num + 1 == onWhichColumnPointerIs
                                     ? const [
-                                        BoxShadow(
-                                            color: Colors.black,
-                                            blurRadius: 17,
-                                            blurStyle: BlurStyle.outer)
-                                      ]
+                                  BoxShadow(
+                                      color: Colors.black,
+                                      blurRadius: 17,
+                                      blurStyle: BlurStyle.outer)
+                                ]
                                     : null),
-                          child: Stack(clipBehavior: Clip.none, children: [
+                            child: Stack(clipBehavior: Clip.none, children: [
                               Container(),
-                              /* Positioned(
-                                  top: 0,
-                                  bottom: MediaQuery.of(context).size.height -
-                                      MediaQuery.of(context).size.height * 6 / 12 -
-                                      calcCardHeight(context) -
-                                      40,
-                                  left: 0,
-                                  right: 0,
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(8),
-                                          boxShadow: num + 1 == onWhichColumnPointerIs
-                                              ? const [
-                                                  BoxShadow(
-                                                      color: Colors.black,
-                                                      blurRadius: 17,
-                                                      blurStyle: BlurStyle.outer)
-                                                ]
-                                              : null))),*/
                               ...List.generate(
                                   7,
-                                  (index) => Positioned(
-                                        width: calcCardSize(context),
-                                        top: index *
-                                            animation.value *
-                                            MediaQuery.of(context).size.height *
-                                            1 /
-                                            12,
-                                        // индекс (0..2) + 1 = номер колонки, умножение на 3 для правильного разложения карт(в каждый столбец по порядку, т.е. 1 столбец - 1, 4, 7...)
-                                        child: images[num + 1 + index * 3],
+                                      (index) => Positioned(
+                                    width: calcCardSize(context),
+                                    top: index *
+                                        animation.value *
+                                        MediaQuery.of(context).size.height *
+                                        1 /
+                                        12,
+                                    // индекс (0..2) + 1 = номер колонки, умножение на 3 для правильного разложения карт(в каждый столбец по порядку, т.е. 1 столбец - 1, 4, 7...)
+                                    child: images[num + 1 + index * 3],
                                     /*MouseRegion(
                                           onEnter: animation.isCompleted
                                               ? (enter) => setState(() =>
@@ -724,14 +562,14 @@ class _CardsDisplayState extends State<CardsDisplay>
                                             },
                                           ),
                                         ),*/
-                                      )),
+                                  )),
                               Positioned(
                                   width: calcCardSize(context),
                                   top: -shirtAnimation.value * 205,
                                   child: images[0]),
-                          ]),
+                            ]),
+                          ),
                         ),
-                            ),
                         /*Positioned(
                               width: calcCardSize(context),
                               top: -shirtAnimation.value * 205,
@@ -744,7 +582,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                       duration: const Duration(milliseconds: 500),
                       width: calcCardSize(context) - 30,
                       bottom: onWhichColumnPointerIs == 0
-                          ? -180
+                          ? -210
                           : MediaQuery.of(context).size.height / 13,
                       left: onWhichColumnPointerIs == 0
                           ? MediaQuery.of(context).size.width / 2 - 40
@@ -771,14 +609,34 @@ class _CardsDisplayState extends State<CardsDisplay>
 }
 
 void main() {
-  runApp(const MaterialApp(
+  runApp(MaterialApp(
       title: 'Card Focus',
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-          backgroundColor: Color.fromRGBO(69, 152, 66, 0.9),
-          body: Center(
+          backgroundColor: const Color.fromRGBO(69, 152, 66, 0.9),
+          body: const Center(
             child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),
                 child: CardsDisplay()),
-          ))));
+          ),
+        bottomNavigationBar: Stack(
+          alignment: Alignment.bottomRight,
+          children: const [
+            Padding(
+              padding: EdgeInsets.all(5),
+              child: Text(
+                version,
+                style: TextStyle(
+                      backgroundColor: Colors.transparent,
+                      color: Colors.white,
+                      fontFamily: 'ComicSansMS',
+                      fontStyle: FontStyle.italic,
+                      fontSize: 14)
+              ),
+            ),
+          ],
+        ),
+      )
+  )
+  );
 }
