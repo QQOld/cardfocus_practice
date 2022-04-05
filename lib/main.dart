@@ -505,10 +505,9 @@ class _CardsDisplayState extends State<CardsDisplay>
                         duration: const Duration(milliseconds: 1500),
                         curve: Curves.easeOutSine,
                         top: 0,
-                        bottom: MediaQuery.of(context).size.height -
-                            MediaQuery.of(context).size.height * 6 / 12 -
-                            calcCardHeight(context) -
-                            0,
+                        bottom: (MediaQuery.of(context).size.height - 70) -
+                            (6/12) * MediaQuery.of(context).size.height -
+                            calcCardHeight(context),
                         left: isShuffling
                             ? MediaQuery.of(context).size.width / 2 -
                             calcCardSize(context) / 2
