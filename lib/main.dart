@@ -508,7 +508,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                         bottom: MediaQuery.of(context).size.height -
                             MediaQuery.of(context).size.height * 6 / 12 -
                             calcCardHeight(context) -
-                            40,
+                            70,
                         left: isShuffling
                             ? MediaQuery.of(context).size.width / 2 -
                             calcCardSize(context) / 2
