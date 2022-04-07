@@ -96,11 +96,11 @@ class _CardsDisplayState extends State<CardsDisplay>
         if (status == AnimationStatus.completed) {
           setState(() {});
         }
-        if (status == AnimationStatus.dismissed && isRepeat) {
+        /*if (status == AnimationStatus.dismissed && isRepeat) {
           setState(() {
             startAnimController.forward();
           });
-        }
+        }*/
       });
 
     controller = AnimationController(
@@ -173,6 +173,7 @@ class _CardsDisplayState extends State<CardsDisplay>
 
   void _chooseColumn(int num) {
     if (animation.isCompleted) {
+      onWhichColumnPointerIs = 0;
       //почему не работает без if?
       controller.reverse();
     }
@@ -231,7 +232,9 @@ class _CardsDisplayState extends State<CardsDisplay>
                         isCardChoosing = true;
                         columnChoice = 0;
                         _choiceCount = 0;
-                        isRepeat = true;
+                        controller.reset();
+                        startAnimController.reset();
+                        startAnimController.forward();
                       })
                           : null,
                       child: Container(
@@ -462,7 +465,7 @@ class _CardsDisplayState extends State<CardsDisplay>
             },
             child: MouseRegion(
               cursor: onWhichColumnPointerIs == 0 ? SystemMouseCursors.basic : SystemMouseCursors.click,
-              onHover: updateCursorCoord,
+              onHover: controller.isAnimating ? null : updateCursorCoord,
               onExit: (exit) => setState(
                       () => onWhichColumnPointerIs = 0),
               child: Stack(
@@ -525,7 +528,7 @@ class _CardsDisplayState extends State<CardsDisplay>
                           child: Container(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
-                                boxShadow: num + 1 == onWhichColumnPointerIs
+                                boxShadow: num + 1 == onWhichColumnPointerIs && animation.isCompleted
                                     ? const [
                                   BoxShadow(
                                       color: Colors.black,
