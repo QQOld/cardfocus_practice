@@ -1,6 +1,6 @@
 {
-    "name": "cardfocus",
-    "short_name": "cardfocus",
+    "name": "cardfocus_practice",
+    "short_name": "cardfocus_practice",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
