@@ -1,10 +1,8 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-const String version = "1.0";
+const String version = "1.0.2";
 
 List<Image> images =
 List.generate(22, (index) => Image.asset("assets/img/${index + 1}.png"));
