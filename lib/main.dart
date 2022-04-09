@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-const String version = "1.0.0";
+const String version = "1.0.1";
 
 List<Image> images =
 List.generate(22, (index) => Image.asset("assets/img/${index + 1}.png"));
