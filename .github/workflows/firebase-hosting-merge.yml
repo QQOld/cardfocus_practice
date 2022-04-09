@@ -11,10 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: "stable"
       - run: 'n'
+      - run: flutter pub get
+      - run: flutter build web
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CARDFOCUS_948B6 }}'
           channelId: live
           projectId: cardfocus-948b6
+
